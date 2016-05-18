@@ -297,6 +297,133 @@ SumBasic & \alert<2>{96.00\%} & \alert<3>{95.00\%} & \alert<4>{90.83\%} \\
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Compression with Extraction: ILP}
+    \cite{martins2009summarization} -- Sentence extraction and compression
+    task is encoded as an ILP; solve both problems simultaneously. 
+    \begin{itemize}
+    \item flexible model for encoding various constraints
+    \item extraction parameters trained separately from compression parameters
+    \item only see small increase in ROUGE-2 scores against extractive baselines
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Compression with Extraction}
+\cite{zajic2006sentence} -- Applied single-sentence compression to 
+    over-generate possible summary sentences; greedily select sentences
+    for summary inclusion
+    \begin{itemize}
+    \item Manually tuned weights -- data-driven approach likely to give better
+        results
+    \item moderate to poor ROUGE results
+    \item poor linguistic quality judgements
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Compression with Extraction}
+    \cite{wang2013sentence} -- rank and compress approach, adding compressed
+    sentences to summary until length constraint exhausted
+    \begin{itemize}
+        \item pipeline approach, ranking and generation trained separately 
+        \item ranking performed on uncompressed sentences
+        \item compression scoring uses beam search to handle constraints of 
+            a simple classification model -- possibly a better solution to this?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Compression with Extraction}
+    \cite{berg2011jointly} -- learning and predicting for joint compression and
+    extraction, using ILP formulation
+    \begin{itemize}
+    \item created bigram recall maximizing overlength extracts
+    \item used mechanical turk to collect compressions of overlength extracts
+    \item approximate joint objective: 
+        \begin{itemize}
+            \item run overlength extractive solver
+            \item run compressive solver over fixed extractions
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Summarization with Semantics}
+    \cite{liu2015toward} -- Merges AMR graphs of sentence inputs into a single
+    graph object; after graph compression applied, generation can be performed
+    (in theory)
+    \begin{itemize}
+    \item uses ILP solver to find graph compression that matches summary graph
+    \item generation from resultant graph is an open problem
+    \item simple unigram generation model used as proof of concept; 
+        (much ceiling between achieved results and oracle) 
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Summarization with Grammar}
+    \cite{woodsend2010generation} -- Headline/Caption generation using ILP 
+    solver and quasi-synchronous grammar alignment constraints
+    \begin{itemize}
+    \item Similar to ILP's for compression/extraction, but more expressive:
+       \begin{itemize}
+           \item deletion (compression)
+           \item rewriting (paraphrase)
+           \item reordering 
+       \end{itemize}
+   \item high grammiticality and importance scores (on par with human 
+       reference)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Summarization with Open-IE patterns}
+
+    \cite{pighin2014modelling} -- Mine template patterns for sentence 
+        summarization
+        \begin{itemize}
+            \item propose a memory-based look up data structure for mapping a 
+                sentence to IE-pattern sub-graphs it contains
+            \item only compare against their own template based methods;
+                unclear how these compare other approaches or human reference
+        \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Sentence Fusion}
+    \cite{barzilay2005sentence} -- Combine dependency graphs of similar 
+    sentences; linearize with a language model
+    \begin{itemize}
+    \item performs text-to-text generation without semantic representation
+    \item fusion lattice structure contains multiple verbalizations
+    \item output has low content coverage compared to humans;
+        but better than baseline
+    \item linearization is the source of grammatical errors
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Sentence Fusion}
+    \cite{filippova2008sentence} -- sentence fusion by finding compressed 
+    dependency graph using ILP formulation
+    \begin{itemize}
+    \item deletion conditioned on informativeness and dependency labeled 
+        scores derived from corpus
+    \item better human readability scores than \cite{barzilay2005sentence}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Headline Generation}
+    \cite{rush2015neural} -- adapt neural machine translation to headline 
+        generation
+    \begin{itemize}
+        \item alignments at scale are very effective (abstractive attention 
+            model and trad. MT system MOSES are very competitive)
+        \item neural model requires additional beam search decoding features
+            to surpass MOSES
+    \end{itemize}
+\end{frame}
+
+
 
 
 \bibliographystyle{apalike}
