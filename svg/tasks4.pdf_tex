@@ -55,5 +55,6 @@
     \put(0.0405315,0.26108179){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.57088515\unitlength}\raggedright Query Focused Multi \\ Document Summarization\end{minipage}}}%
     \put(0.61550674,0.65132394){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25126373\unitlength}\raggedright \Large{Background}\end{minipage}}}%
     \put(0.63353622,0.7319465){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.39043874\unitlength}\raggedright Update Summarization\end{minipage}}}%
+    \put(0.64732832,0.39113347){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25126373\unitlength}\raggedright \Large{Input}\end{minipage}}}%
   \end{picture}%
 \endgroup%
