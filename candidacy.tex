@@ -1,7 +1,7 @@
 \documentclass[xcolor={table}]{beamer}
 \usefonttheme{professionalfonts}
 \usefonttheme{serif}
-
+\usepackage{natbib}
 \usepackage{times}
 \usepackage{tabularx}
 \usepackage{ulem}
@@ -17,6 +17,26 @@
     \let\set@color\beamerorig@set@color
     \let\reset@color\beamerorig@reset@color}
 \makeatother
+
+\definecolor{conc}{HTML}{660000}
+\definecolor{proc}{HTML}{194f19}
+\newcommand\conit[1]{\item[\textcolor{conc}{$-$}] \textcolor{conc}{#1}}
+\newcommand\proit[1]{\item[\textcolor{proc}{$+$}] \textcolor{proc}{#1}}
+\newcommand\spit{\hspace{\labelwidth}}
+
+\newcommand\nodecite[1]{\fontsize{9.2pt}{12pt}\selectfont\citet{#1}}
+\newcommand\nodeciteh[1]{\fontsize{9.2pt}{12pt}\selectfont\textcolor{proc}{
+    \citet{#1}}}
+
+
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}%
+  }%
+}
+
 
 \usetheme{metropolis}           % Use metropolis theme
 \title{Multi-Document Summarization: Evaluation, Extraction, and Abstraction}
@@ -63,490 +83,510 @@
 
 \section{Evaluation}
 
-\begin{frame}{\textbf{Intrinsic} vs \textbf{Extrinsic} Evaluation}
+\begin{frame}{Summary Evaluation: Document Understanding Conf.}
+  
+  ~\\
+  
+  \textbf{Linguistic Quality}
+  \begin{itemize}
+    \small
+    \item Are the summaries grammatical, coherent, and otherwise well written?
+  \end{itemize}
 
-\textbf{Intrinsic Evaluation}
-\begin{itemize}
-\item Are the summaries grammatical, coherent, and otherwise well written?
-\only<2->{\textbf{(Linguistic Quality)}}
-\item Do they convey the important information in the input documents?
-    \only<3->{\textbf{(Coverage \& Responsiveness)}}
-\end{itemize}
-\textbf{Extrinsic Evaluation}
-\begin{itemize}
-\item Do the summaries help in some downstream task? 
-\end{itemize}
+  ~\\~\\
+
+  \textbf{Content Selection}
+  \begin{itemize}
+    \small
+    \item Do they convey the important information in the input documents?
+  \end{itemize}
 \end{frame}
 
 
-\begin{frame}{Summary Content Evaluation}
-\textbf{Coverage Assessment} 
-\begin{itemize}
-    \item How much of the meaning in 
-        a reference summary is covered by the system summary? (6 pt. scale)
-\end{itemize}
-~\\
-~\\
-\textbf{Responsiveness Assessment} 
-\begin{itemize}
-    \item  How well does a summary answer the information need,
-        given the topic query/user profile? (5 pt. scale)
-\end{itemize}
+\begin{frame}{Content Selection Evaluation: Document Understanding Conf.}
+
+  ~\\
+
+  {\large\textbf{Coverage Assessment}}
+  {\footnotesize\textbf{(DUC 01-04)}}
+  \begin{itemize}
+    \small
+    \item How much of the meaning in a reference summary is covered by the\\
+        \spit system summary? (6 pt. scale)
+    \uncover<2->{\conit{Judgement made with only 1 reference summary!}}
+    \uncover<3->{\conit{Coverage assessor often the author of the reference!}}
+  \end{itemize}
+
+  ~\\
+
+  {\large\textbf{Responsiveness Assessment} }
+  {\footnotesize\textbf{(DUC 03-07, TAC 08-11)}} 
+  \begin{itemize}
+    \small
+    \item  How well does a summary answer the information need, given the\\ 
+        \spit topic query/user profile? (5 pt. scale)
+    \uncover<4->{\proit{No reference summary needed!}}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Content Evaluation Road Map}
- \begin{tikzpicture}[
-    dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
-    depa/.style={draw, shape=circle, ultra thick, fill=green},
-]
+ \Wider[4.1em]{
+  \begin{figure}[h]
+   \centering
+   \begin{tikzpicture}[
+     dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
+     depa/.style={draw, shape=circle, ultra thick, fill=proc!70},
+   ]
+ 
+    \draw[fill=none,draw=none] (-2,1.6) rectangle (8,-5.3);
+    \visible<2->{
+     \draw[fill=blue!5,draw=none] (-3.2, 1.6) rectangle (8.4,-1.8);
+     \draw[fill=red!5,draw=none]  (-3.2,-5.3) rectangle (8.4,-1.8);
+     \draw[dashed] (-3.2,-1.8) -- (8.4,-1.8);
 
-\draw[fill=none,draw=none] (-2,1.6) rectangle (8,-5.3);
-\visible<2->{
-\draw[fill=blue!5,draw=none] (-2,1.6) rectangle (8,-1.8);
-\draw[fill=red!5,draw=none] (-2,-5.3) rectangle (8,-1.8);
-\draw[dashed] (-2,-1.8) -- (8,-1.8);
-\node (a) at (0,0) {\textbf{Shallow Coverage}};
-\node[align=center] (b) at (6.2,-3.0) 
-    {\textbf{Semantically}\\ \textbf{Informed Coverage}};
-}
-
-    \visible<3->{\draw[thick,dotted] (4.9,0.6) rectangle (7.5,-1.1);
-\draw[thick,dotted] (-1.6,-1.9) rectangle (1.6,-5.3);
-\draw[thick,dotted] (1.7,1.6) rectangle (4.3,-4.3);
-    \node[align=center] (x) at (0,-5) {\small \textbf{Needs Reference}\\
+     \node at (-1,0) {\textbf{Shallow Coverage}};
+     \node[align=center] at (6.5,-3.0) 
+      {\textbf{Semantically}\\
+       \textbf{Informed Coverage}
+      };
+    }
+ 
+    \visible<3>{
+     \draw[thick,dotted] (-3.2,-1.9) rectangle (1.2,-5.3);
+     \node[align=center] (x) at (-1,-5) {
+        \small \textbf{Needs Reference}\\
         \small \textbf{Human Annotation}\\};
-    \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
-    \node[align=center] (z) at (6.2,0) {\small \textbf{Reference Free}\\};
-}
-
+    } 
+    \visible<3->{
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-4.3);
+     \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
+     \draw[thick,dotted] (4.6,0.6) rectangle (8.4,-1.1);
+     \node[align=center] (z) at (6.5,0) {\small \textbf{Reference Free}\\};
+    }
+ 
     \node[dep] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \cite{lin2004rouge}};
+    \node[] (lintxt) at (3,-.2) {\nodecite{lin2004rouge}};
     \node[dep] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \cite{conroy2011nouveau}};
-
-    %\path [->] (A) edge (B); 
-
-    \node[dep] (teufelnode) at (0,-2.2) {};
-    \node[] (teufeltxt) at (0,-2.6) {\tiny \cite{teufel2004evaluating}};
-    \node[dep] (nenkovanode) at (0,-3.2) {};
-    \node[] (nenkovatxt) at (0,-3.6) {\tiny \cite{nenkova2007pyramid}};
-
+    \node[] (conroytxt) at (3,-1.4) {\nodecite{conroy2011nouveau}};
+ 
+    \node[dep] (teufelnode) at (-1,-2.2) {};
+    \node[] (teufeltxt) at (-1,-2.6) {\nodecite{teufel2004evaluating}};
+    \node[dep] (nenkovanode) at (-1,-3.2) {};
+    \node[] (nenkovatxt) at (-1,-3.6) {\nodecite{nenkova2007pyramid}};
+ 
     \visible<4->{
-    \node[depa] (teufelnode) at (0,-2.2) {};
-    \node[depa] (nenkovanode) at (0,-3.2) {};
-\draw[thick,draw=green] (-1.6,-1.9) rectangle (1.6,-5.3);
-\node[] (teufeltxt) at (0,-2.6) {\tiny\textcolor{green}{ \cite{teufel2004evaluating}}};
-\node[] (nenkovatxt) at (0,-3.6) {\tiny\textcolor{green}{\cite{nenkova2007pyramid}}};
-
-\node[align=center] (x) at (0,-5) {\small \textcolor{green}{\textbf{Needs Reference}}\\
-\small \textcolor{green}{\textbf{Human Annotation}}\\};
+     \node[depa] (teufelnode) at (-1,-2.2) {};
+     \node[depa] (nenkovanode) at (-1,-3.2) {};
+     \draw[thick,draw=proc] (-3.2,-1.9) rectangle (1.2,-5.3);
+     \node[] (teufeltxt) at (-1,-2.6) {\nodeciteh{teufel2004evaluating}};
+     \node[] (nenkovatxt) at (-1,-3.6) {\nodeciteh{nenkova2007pyramid}};
+ 
+     \node[align=center] (x) at (-1,-5) {
+         \small\textcolor{proc}{\textbf{Needs Reference}}\\
+         \small\textcolor{proc}{\textbf{Human Annotation}}\\
+     };
     }
 
     \node[dep] (hennignode) at (3,-2.7) {};
-    \node[] (hennigtxt) at (3,-3.1) {\tiny \cite{hennig2010learning}};
+    \node[] (hennigtxt) at (3,-3.1) {\nodecite{hennig2010learning}};
     \node[dep] (yangnode) at (3,-3.7) {};
-    \node[] (yangtxt) at (3,-4.1) {\tiny \cite{yang2016peak}};
+    \node[] (yangtxt) at (3,-4.1) {\nodecite{yang2016peak}};
 
-    \node[dep] (louisnode) at (6.2,-.5) {};
-    \node[] (louistxt) at (6.2, -.9) {\tiny \cite{louis2009automatically}};
+    \node[dep] (louisnode) at (6.5,-.5) {};
+    \node[] (louistxt) at (6.5, -.9) {\nodecite{louis2009automatically}};
     \path [->] (nenkovanode) edge (hennignode); 
     \path [->] (nenkovanode) edge (yangnode); 
 
-\end{tikzpicture}
-
+   \end{tikzpicture}
+  \end{figure}
+ }
 \end{frame}
 
 \begin{frame}[t]{Factoids and Pyramids}
-    \textbf{Factoids} \cite{teufel2004evaluating} \\
-    \textbf{Pyramid} \cite{nenkova2007pyramid}
-    \begin{itemize}
-        \item \small{Label factoids/SCUs in ref. summaries}
-        \uncover<5->{\item \small{Weight factoids/SCUs by frequency in 
-            references }}
-        \uncover<7->{\item \small{Summary score $\propto$ to the sum of 
-            weights of factoids/SCUs contained}}
-    \end{itemize}
-
-    ~\\
-    
-    
-    \uncover<2->{\small SCU label: \textit{Lopez left GM for VW}\\} 
-    \uncover<6->{\small SCU Weight: 2\\}
-
-    \only<3->{
-    \begin{itemize}
-        \only<-3>{   \tiny{ \item
-    The industrial espionage case involving GM and VW began with 
-    the hiring of Jose Ignacio Lopez, an employee of GM
-    subsidiary Adam Opel, by VW as a production director.}
-}\only<4->{\tiny{ \item
-    The industrial espionage case involving GM and VW began with 
-    \SoulColor\hl{the} \SoulColor\hl{hiring of Jose Ignacio Lopez, an employee of GM} 
-    subsidiary Adam Opel, \SoulColor\hl{by VW} as a production director.}
-    
-}
+  \textbf{Factoids} {\small \citep{teufel2004evaluating}} \\
+  \textbf{Pyramid} {\small \citep{nenkova2007pyramid} }
+  \begin{itemize}
+    \small
+    \item Label factoids/SCUs in ref. summaries.
+    \uncover<3->{\item Weight factoids/SCUs by frequency in references.}
+    \uncover<4->{\item Summary score $\propto$ to the sum of weights of 
+        factoids/SCUs contained.}
+    \uncover<5->{\proit{More reliable assessment than ``coverage score'' 
+                 procedure! }}
+  \end{itemize}
  
-    \only<-3>{
-    \item \tiny{
-    However, he left GM for VW under circumstances, which along
-    with ensuing events, were described by a German judge as ``potentially the
-    biggest ever case of industrial espionage.''}}
-    \only<4->{
-    \item \tiny{
-    However, \SoulColor\hl{he left GM for VW} under circumstances, which along
-    with ensuing events, were described by a German judge as ``potentially the
-    biggest ever case of industrial espionage.''}}
+  ~\\
+  \only<1-4>{        
+  \uncover<2-4>{\small SCU label: \textit{Lopez left GM for VW}\\} 
+  \uncover<3-4>{\small SCU Weight: 2\\}
+  }
 
-    %\item \only<-3>{\small{
-%    He left GM for VW in March 1993.}}
-% \only<4->{\small{
-%    \SoulColor\hl{He left GM for VW} in March 1993.}}
-\end{itemize}
-}
-
-\end{frame}
-
-\begin{frame}[t]{Factoids and Pyramids}
-    \textbf{Factoids} \cite{teufel2004evaluating} \\
-    \textbf{Pyramid} \cite{nenkova2007pyramid}
+  \only<1-4>{
+   \uncover<2-4>{
     \begin{itemize}
-        \item \small{Label factoids/SCUs in ref. summaries}
-        \item \small{Weight factoids/SCUs by frequency in 
-            references }
-        \item \small{Summary score $\propto$ to the sum of 
-            weights of factoids/SCUs contained}
+      \tiny 
+      \item
+        The industrial espionage case involving GM and VW began with 
+        \SoulColor\hl{the} \SoulColor\hl{hiring of Jose Ignacio Lopez, an 
+        employee of GM} subsidiary Adam Opel, \SoulColor\hl{by VW} as a 
+        production director.
+  
+      \item
+         However, \SoulColor\hl{he left GM for VW} under circumstances, which 
+         along with ensuing events, were described by a German judge as 
+         ``potentially the biggest ever case of industrial espionage.''
     \end{itemize}
-
-    Disagreement in annotator stability:
-
-    \begin{itemize}
-            \only<1>{
-        \small{\item Factoids require 20-30 reference 
-                summaries\\ 
-            \cite{teufel2004evaluating}}
-        }
-            \only<2->{
-        \small{\item \textcolor{red}{Factoids require 20-30 reference 
-                summaries}\\ 
-            \cite{teufel2004evaluating}}
-        }
-        \only<-2>{
-        \small{\item Pyramid requires at least 5 reference summaries\\ 
-            \cite{nenkova2007pyramid}}
-        \small{\item Pyramid requires at least 2-3 reference summaries for 
-                correlation with responsiveness\\ 
-        \cite{owczarzak2009evaluation}}}
-        \only<3>{
-        \small{\item \textcolor{green}{Pyramid requires at least 5 reference 
-                summaries}\\ 
-            \cite{nenkova2007pyramid}}
-        \small{\item \textcolor{green}{Pyramid requires at least 2-3 reference
-                    summaries for 
-                correlation with responsiveness}\\ 
-        \cite{owczarzak2009evaluation}}}
-
-    \end{itemize}
-
+   }
+  }
+  \only<5->{
+  \uncover<6->{
+     Disagreement in annotator stability:
+     \begin{itemize}
+       \small
+       \conit{Factoids require 20-30 reference summaries! 
+                {\scriptsize\citep{teufel2004evaluating}}}
+         \proit{Pyramid requires at least 5 reference summaries!
+             {\scriptsize\citep{nenkova2007pyramid}}}
+        \proit{Pyramid requires at least 2-3 reference summaries 
+                for correlation with responsiveness!
+             {\scriptsize\citep{owczarzak2009evaluation}}}
+         
+     \end{itemize}
+  }}
 \end{frame}
-
+ 
 \begin{frame}{Content Evaluation Road Map}
- \begin{tikzpicture}[
-    dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
-    depa/.style={draw, shape=circle, ultra thick, fill=green},
-]
+ \Wider[4.1em]{
+  \begin{figure}[h]
+   \centering
+   \begin{tikzpicture}[
+     dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
+     depa/.style={draw, shape=circle, ultra thick, fill=proc!70},
+   ]
 
-\draw[fill=none,draw=none] (-2,1.6) rectangle (8,-5.3);
-\draw[fill=blue!5,draw=none] (-2,1.6) rectangle (8,-1.8);
-\draw[fill=red!5,draw=none] (-2,-5.3) rectangle (8,-1.8);
-\draw[dashed] (-2,-1.8) -- (8,-1.8);
-\node (a) at (0,0) {\textbf{Shallow Coverage}};
-\node[align=center] (b) at (6.2,-3.0) 
-    {\textbf{Semantically}\\ \textbf{Informed Coverage}};
+    \draw[fill=none,draw=none] (-3.2,1.6) rectangle (8.4,-5.3);
+    \draw[fill=blue!5,draw=none] (-3.2,1.6) rectangle (8.4,-1.8);
+    \draw[fill=red!5,draw=none] (-3.2,-5.3) rectangle (8.4,-1.8);
+    \draw[dashed] (-3.2,-1.8) -- (8.4,-1.8);
 
-   \draw[thick,dotted] (4.9,0.6) rectangle (7.5,-1.1);
-\draw[thick,dotted] (-1.6,-1.9) rectangle (1.6,-5.3);
-\draw[thick,dotted] (1.7,1.6) rectangle (4.3,-4.3);
-    \node[align=center] (x) at (0,-5) {\small \textbf{Needs Reference}\\
-        \small \textbf{Human Annotation}\\};
-    \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
-    \node[align=center] (z) at (6.2,0) {\small \textbf{Reference Free}\\};
+    \node at (-1,0) {\textbf{Shallow Coverage}};
+    \node[align=center] at (6.5,-3.0) 
+        {\textbf{Semantically}\\
+         \textbf{Informed Coverage}
+        };
 
-    \node[dep] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \cite{lin2004rouge}};
-    \node[dep] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \cite{conroy2011nouveau}};
+    \visible<1>{
+     \node[align=center] at (-1,-5) {
+         \small \textcolor{proc}{\textbf{Needs Reference}}\\
+         \small \textcolor{proc}{\textbf{Human Annotation}}\\};
+     \node[depa] (teufelnode) at (-1,-2.2) {};
+     \node[depa] (nenkovanode) at (-1,-3.2) {};
+     \draw[thick,draw=proc] (-3.2,-1.9) rectangle (1.2,-5.3);
+     \node[] (teufeltxt) at (-1,-2.6) {\nodeciteh{teufel2004evaluating}};
+     \node[] (nenkovatxt) at (-1,-3.6) {\nodeciteh{nenkova2007pyramid}};
+    }
+    \visible<2->{
+     \draw[thick,dotted] (-3.2,-1.9) rectangle (1.2,-5.3);
+     \node[align=center] at (-1,-5) {
+         \small \textbf{Needs Reference}\\
+         \small \textbf{Human Annotation}\\};
+     \node[dep] (teufelnode) at (-1,-2.2) {};
+     \node[dep] (nenkovanode) at (-1,-3.2) {};
+     \node[] (teufeltxt) at (-1,-2.6) {\nodecite{teufel2004evaluating}};
+     \node[] (nenkovatxt) at (-1,-3.6) {\nodecite{nenkova2007pyramid}};
+    }
 
-    %\path [->] (A) edge (B); 
-
-    \node[dep] (teufelnode) at (0,-2.2) {};
-    \node[] (teufeltxt) at (0,-2.6) {\tiny \cite{teufel2004evaluating}};
-    \node[dep] (nenkovanode) at (0,-3.2) {};
-    \node[] (nenkovatxt) at (0,-3.6) {\tiny \cite{nenkova2007pyramid}};
-
-\visible<1>{
-    \node[depa] (teufelnode) at (0,-2.2) {};
-    \node[depa] (nenkovanode) at (0,-3.2) {};
-\draw[thick,draw=green] (-1.6,-1.9) rectangle (1.6,-5.3);
-\node[] (teufeltxt) at (0,-2.6) {\tiny\textcolor{green}{ \cite{teufel2004evaluating}}};
-\node[] (nenkovatxt) at (0,-3.6) {\tiny\textcolor{green}{\cite{nenkova2007pyramid}}};
-
-\node[align=center] (x) at (0,-5) {\small \textcolor{green}{\textbf{Needs Reference}}\\
-\small \textcolor{green}{\textbf{Human Annotation}}\\};
-}
-
-\visible<3>{
-    \node[depa] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \textcolor{green}{\cite{lin2004rouge}}};
-    \node[depa] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \textcolor{green}{\cite{conroy2011nouveau}}};
-
-    \node[align=center] (y) at (3,1) {\small \textcolor{green}{\textbf{Reference Only}}\\};
-\draw[thick,draw=green] (1.7,1.6) rectangle (4.3,-1.8);
-}
-
+    \visible<-2>{
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-4.3);
+     \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
+     \node[dep] (linnode) at (3,.2) {};
+     \node[] (lintxt) at (3,-.2) {\nodecite{lin2004rouge}};
+     \node[dep] (conroynode) at (3,-1) {};
+     \node[] (conroytxt) at (3,-1.4) {\nodecite{conroy2011nouveau}};
+ 
+    }
+    \visible<3>{
+     \node[align=center] at (3,1) {
+        \small \textcolor{proc}{\textbf{Reference Only}}\\};
+     \node[depa] (linnode) at (3,.2) {};
+     \node[] (lintxt) at (3,-.2) {\nodeciteh{lin2004rouge}};
+     \node[depa] (conroynode) at (3,-1) {};
+     \node[] (conroytxt) at (3,-1.4) {\nodeciteh{conroy2011nouveau}};
+     \draw[thick,draw=proc] (1.5,1.6) rectangle (4.5,-1.8);
+     \draw[thick,dotted] (1.5,-1.8) rectangle (4.5,-4.3);
+    }
 
     \node[dep] (hennignode) at (3,-2.7) {};
-    \node[] (hennigtxt) at (3,-3.1) {\tiny \cite{hennig2010learning}};
+    \node[] (hennigtxt) at (3,-3.1) {\nodecite{hennig2010learning}};
     \node[dep] (yangnode) at (3,-3.7) {};
-    \node[] (yangtxt) at (3,-4.1) {\tiny \cite{yang2016peak}};
-
-    \node[dep] (louisnode) at (6.2,-.5) {};
-    \node[] (louistxt) at (6.2, -.9) {\tiny \cite{louis2009automatically}};
+    \node[] (yangtxt) at (3,-4.1) {\nodecite{yang2016peak}};
+    \node[dep] (louisnode) at (6.5,-.5) {};
+    \node[] (louistxt) at (6.5, -.9) {\nodecite{louis2009automatically}};
     \path [->] (nenkovanode) edge (hennignode); 
     \path [->] (nenkovanode) edge (yangnode); 
+    \draw[thick,dotted] (4.6,0.6) rectangle (8.4,-1.1);
+    \node[align=center] (z) at (6.5,0) {\small \textbf{Reference Free}\\};
 
-\end{tikzpicture}
-
+   \end{tikzpicture}
+  \end{figure}
+ }
 \end{frame}
 
 \begin{frame}{Reference Only, Shallow Coverage}
 
-\textbf{ROUGE }\cite{lin2004rouge} -- recall of reference summary ngrams
-\begin{itemize}
+ \textbf{ROUGE }{\small\citep{lin2004rouge}} -- recall of reference summary 
+    ngrams
+ \begin{itemize}
         \small
-    \item de facto standard evaluation tool outside of DUC/TAC
-    \item insensitive to lexical variation
-    %\item uniformly rewards sequence matches, e.g.``of the'' probably not indicative of anything
-    %\item insensitive to linguistic quality, e.g. coherence or discourse
-    \item \only<1>{correlation with coverage is only strong at 
-        200 and 400 word length} 
-\only<2->{\textcolor{red}{correlation with coverage is only strong at 200 and 400 word length}}
-        {\tiny \cite{lin2004rouge,nenkova2005automatic}}
-    \item \only<-2>{Strong rank correlation with respons.  and pyramid 
-        (R2 $>$ .87)!}
-        \only<3->{\textcolor{green}{Strong rank correlation with respons. 
-            and pyramid (R2 $>$ .87)!}}
-    {\tiny \cite{louis2009automatically,owczarzak2009evaluation}}
-\end{itemize}
-\textbf{Nouveau ROUGE} \cite{conroy2011nouveau} -- {\small{(Update Summarization)}} penalize for high ROUGE score
-on background set summary 
-\begin{itemize}
-        \small
-    \item \only<-3>{Makes relationship between ROUGE and pyramid/respons. 
-        more linear}
-        \only<4>{\textcolor{green}{Makes relationship between ROUGE and 
-                pyramid/respons. more linear}}
-
-\end{itemize}
+   \item De facto standard evaluation tool outside of DUC/TAC.
+   \conit{Insensitive to lexical variation.}
+   \conit{Correlation with coverage is only strong at 200 and 400 word 
+        length!\\
+    \spit {\scriptsize \citep{lin2004rouge,nenkova2005automatic}}}
+   \proit{Strong rank correlation with responsiveness  
+          and pyramid (R2 $>$ .87)!\\
+    \spit {\scriptsize \citep{louis2009automatically,owczarzak2009evaluation}}}
+ \end{itemize}
+ \textbf{Nouveau ROUGE} {\small\citep{conroy2011nouveau}} -- 
+        {\small{(Update Summarization)}}\\ \spit Penalize for high ROUGE score
+        on background set summary. 
+ \begin{itemize}
+     \small
+     \proit{Makes relationship between ROUGE and 
+                pyramid/responsiveness\\ \spit more linear.}
+ \end{itemize}
 \end{frame}
 
-
 \begin{frame}{Content Evaluation Road Map}
- \begin{tikzpicture}[
-    dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
-    depa/.style={draw, shape=circle, ultra thick, fill=green},
-]
+ \Wider[4.1em]{
+  \begin{figure}[h]
+   \centering
+   \begin{tikzpicture}[
+     dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
+     depa/.style={draw, shape=circle, ultra thick, fill=proc!70},
+   ]
+ 
+    \draw[fill=none,draw=none] (-3.2,1.6) rectangle (8.4,-5.3);
+    \draw[fill=blue!5,draw=none] (-3.2, 1.6) rectangle (8.4,-1.8);
+    \draw[fill=red!5,draw=none]  (-3.2,-5.3) rectangle (8.4,-1.8);
+    \draw[dashed] (-3.2,-1.8) -- (8.4,-1.8);
 
-\draw[fill=none,draw=none] (-2,1.6) rectangle (8,-5.3);
-\draw[fill=blue!5,draw=none] (-2,1.6) rectangle (8,-1.8);
-\draw[fill=red!5,draw=none] (-2,-5.3) rectangle (8,-1.8);
-\draw[dashed] (-2,-1.8) -- (8,-1.8);
-\node (a) at (0,0) {\textbf{Shallow Coverage}};
-\node[align=center] (b) at (6.2,-3.0) 
-    {\textbf{Semantically}\\ \textbf{Informed Coverage}};
-
-   \draw[thick,dotted] (4.9,0.6) rectangle (7.5,-1.1);
-\draw[thick,dotted] (-1.6,-1.9) rectangle (1.6,-5.3);
-\draw[thick,dotted] (1.7,1.6) rectangle (4.3,-4.3);
-    \node[align=center] (x) at (0,-5) {\small \textbf{Needs Reference}\\
+    \node at (-1,0) {\textbf{Shallow Coverage}};
+    \node[align=center] at (6.5,-3.0) 
+      {\textbf{Semantically}\\
+       \textbf{Informed Coverage}
+      };
+    \draw[thick,dotted] (-3.2,-1.9) rectangle (1.2,-5.3);
+    \node[align=center] at (-1,-5) {
+        \small \textbf{Needs Reference}\\
         \small \textbf{Human Annotation}\\};
+
     \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
-    \node[align=center] (z) at (6.2,0) {\small \textbf{Reference Free}\\};
+    \draw[thick,dotted] (4.6,0.6) rectangle (8.4,-1.1);
+    \node[align=center] (z) at (6.5,0) {\small \textbf{Reference Free}\\};
 
-    \node[dep] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \cite{lin2004rouge}};
-    \node[dep] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \cite{conroy2011nouveau}};
+    \visible<1>{
+     \node[depa] (linnode) at (3,.2) {};
+     \node[] (lintxt) at (3,-.2) {\nodeciteh{lin2004rouge}};
+     \node[depa] (conroynode) at (3,-1) {};
+     \node[] (conroytxt) at (3,-1.4) {\nodeciteh{conroy2011nouveau}};
+     \node[align=center] (y) at (3,1) 
+        {\small \textcolor{proc}{\textbf{Reference Only}}\\};
+     \draw[thick,draw=proc] (1.5,1.6) rectangle (4.5,-1.8);
+     \draw[thick,dotted] (1.5,-1.8) rectangle (4.5,-4.3);
+    }
+    \visible<-2>{
+     \node[dep] (hennignode) at (3,-2.7) {};
+     \node[] (hennigtxt) at (3,-3.1) {\nodecite{hennig2010learning}};
+     \node[dep] (yangnode) at (3,-3.7) {};
+     \node[] (yangtxt) at (3,-4.1) {\nodecite{yang2016peak}};
+    }
+    \visible<2->{
+     \node[dep] (linnode) at (3,.2) {};
+     \node[] (lintxt) at (3,-.2) {\nodecite{lin2004rouge}};
+     \node[dep] (conroynode) at (3,-1) {};
+     \node[] (conroytxt) at (3,-1.4) {\nodecite{conroy2011nouveau}};
+    } 
+    \visible<2>{
+     \node[align=center] at (3,1) 
+        {\small \textbf{Reference Only}\\};
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-4.3);
+    }
+    \visible<3>{
+     \node[align=center] at (3,1) 
+        {\small \textcolor{proc}{\textbf{Reference Only}}\\};
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-1.8);
+     \draw[thick,draw=proc] (1.5,-1.8) rectangle (4.5,-4.3);
+     \node[depa] (hennignode) at (3,-2.7) {};
+     \node[] (hennigtxt) at (3,-3.1) {\nodeciteh{hennig2010learning}};
+     \node[depa] (yangnode) at (3,-3.7) {};
+     \node[] (yangtxt) at (3,-4.1) {\nodeciteh{yang2016peak}};
+    }
 
-    %\path [->] (A) edge (B); 
 
-    \node[dep] (teufelnode) at (0,-2.2) {};
-    \node[] (teufeltxt) at (0,-2.6) {\tiny \cite{teufel2004evaluating}};
-    \node[dep] (nenkovanode) at (0,-3.2) {};
-    \node[] (nenkovatxt) at (0,-3.6) {\tiny \cite{nenkova2007pyramid}};
-    \node[dep] (hennignode) at (3,-2.7) {};
-    \node[] (hennigtxt) at (3,-3.1) {\tiny \cite{hennig2010learning}};
-    \node[dep] (yangnode) at (3,-3.7) {};
-    \node[] (yangtxt) at (3,-4.1) {\tiny \cite{yang2016peak}};
 
-    \node[dep] (louisnode) at (6.2,-.5) {};
-    \node[] (louistxt) at (6.2, -.9) {\tiny \cite{louis2009automatically}};
+    \node[dep] (teufelnode) at (-1,-2.2) {};
+    \node[] (teufeltxt) at (-1,-2.6) {\nodecite{teufel2004evaluating}};
+    \node[dep] (nenkovanode) at (-1,-3.2) {};
+    \node[] (nenkovatxt) at (-1,-3.6) {\nodecite{nenkova2007pyramid}};
+ 
+    \node[dep] (louisnode) at (6.5,-.5) {};
+    \node[] (louistxt) at (6.5, -.9) {\nodecite{louis2009automatically}};
     \path [->] (nenkovanode) edge (hennignode); 
     \path [->] (nenkovanode) edge (yangnode); 
 
-\
-
-\visible<1>{
-    \node[depa] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \textcolor{green}{\cite{lin2004rouge}}};
-    \node[depa] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \textcolor{green}{\cite{conroy2011nouveau}}};
-
-    \node[align=center] (y) at (3,1) {\small \textcolor{green}{\textbf{Reference Only}}\\};
-\draw[thick,draw=green] (1.7,1.6) rectangle (4.3,-1.8);
-}
-
-\visible<3>{
-    \node[depa] (hennignode) at (3,-2.7) {};
-    \node[] (hennigtxt) at (3,-3.1) {\tiny \textcolor{green}{\cite{hennig2010learning}}};
-    \node[depa] (yangnode) at (3,-3.7) {};
-    \node[] (yangtxt) at (3,-4.1) {\tiny \textcolor{green}{\cite{yang2016peak}}};
-
-
-    \node[align=center] (y) at (3,1) {\small \textcolor{green}{\textbf{Reference Only}}\\};
-\draw[thick,draw=green] (1.7,-1.8) rectangle (4.3,-4.3);
-}
-
-\end{tikzpicture}
-
+   \end{tikzpicture}
+  \end{figure}
+ }
 \end{frame}
 
 \begin{frame}{Automating Pyramid}
 
-    \textbf{LDA} \cite{hennig2010learning} topics $\approx$ SCU
-\begin{itemize}
+ \textbf{LDA} {\scriptsize\citep{hennig2010learning}} -- topics $\approx$ SCU
+ \begin{itemize}
         \small
-\item LDA topics and SCU's unigram distributions are very similar 
-\item \only<1>{good matching between LDA topics and SCUs is possible}
-    \only<2->{\textcolor{green}{good matching between LDA topics and SCUs is 
-        possible}}
-\item \only<-2>{theoretical, no method yet of selecting appropriate 
-        topics w/o SCUs}
-    \only<3->{\textcolor{red}{theoretical, no method yet of selecting 
-        appropriate topics w/o SCUs}}
-\end{itemize}
+  \item LDA topics and SCU's unigram distributions are very similar. 
+  \only<1>{\item Good matching between LDA topics and SCUs is possible.}
+  \only<2->{\proit{Good matching between LDA topics and SCUs is 
+        possible.}}
+  \only<-2>{\item Theoretical, no method yet of selecting appropriate 
+        topics w/o SCUs.}
+  \only<3->{\conit{Theoretical, no method yet of selecting 
+        appropriate topics w/o SCUs.}}
+ \end{itemize}
 
-\textbf{PEAK} \cite{yang2016peak} subj-pred.-obj tuple $\approx$ SCU
-\begin{itemize}
-        \small
-\item Uses Open-IE style pattern extraction as stand-in for SCU's
-\item System SCU's mapped to Reference SCU's via maximal matching %(Munkres-Kuhn algo.)
-\item \only<-3>{(DUC 06) moderate correlation with pyramid scores (.7094)}
-    \only<4->{\textcolor{green}{(DUC 06) moderate correlation with pyramid 
-        scores (.7094)}}
-\item \only<-4>{unclear if the rank correlation is higher than ROUGE-2}
-    \only<5>{\textcolor{red}{unclear if the rank correlation is higher than 
-        ROUGE-2}}
-\end{itemize}
+ \textbf{PEAK} {\scriptsize\citep{yang2016peak}} -- subj-pred.-obj tuple $\approx$ SCU
+
+ \begin{itemize}
+   \small
+   \item Uses Open-IE style pattern extraction as stand-in for SCU's.
+   \item System SCU's mapped to Reference SCU's via maximal matching.
+   \only<-3>{\item (DUC 06) Moderate correlation with pyramid scores (.7094).}
+   \only<4->{\proit{(DUC 06) Moderate correlation with pyramid 
+        scores (.7094).}}
+   \only<-4>{\item unclear if the rank correlation is higher than ROUGE-2.}
+   \only<5>{\conit{Unclear if the rank correlation is higher than 
+        ROUGE-2.}}
+ \end{itemize}
 \end{frame}
 
 \begin{frame}{Content Evaluation Road Map}
- \begin{tikzpicture}[
-    dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
-    depa/.style={draw, shape=circle, ultra thick, fill=green},
-]
+ \Wider[4.1em]{
+  \begin{figure}[h]
+   \centering
+   \begin{tikzpicture}[
+     dep/.style={draw, shape=circle, ultra thick, fill=blue!20},
+     depa/.style={draw, shape=circle, ultra thick, fill=proc!70},
+   ]
+ 
+    \draw[fill=none,draw=none] (-3.2,1.6) rectangle (8.4,-5.3);
+    \draw[fill=blue!5,draw=none] (-3.2, 1.6) rectangle (8.4,-1.8);
+    \draw[fill=red!5,draw=none]  (-3.2,-5.3) rectangle (8.4,-1.8);
+    \draw[dashed] (-3.2,-1.8) -- (8.4,-1.8);
 
-\draw[fill=none,draw=none] (-2,1.6) rectangle (8,-5.3);
-\draw[fill=blue!5,draw=none] (-2,1.6) rectangle (8,-1.8);
-\draw[fill=red!5,draw=none] (-2,-5.3) rectangle (8,-1.8);
-\draw[dashed] (-2,-1.8) -- (8,-1.8);
-\node (a) at (0,0) {\textbf{Shallow Coverage}};
-\node[align=center] (b) at (6.2,-3.0) 
-    {\textbf{Semantically}\\ \textbf{Informed Coverage}};
-
-   \draw[thick,dotted] (4.9,0.6) rectangle (7.5,-1.1);
-\draw[thick,dotted] (-1.6,-1.9) rectangle (1.6,-5.3);
-\draw[thick,dotted] (1.7,1.6) rectangle (4.3,-4.3);
-    \node[align=center] (x) at (0,-5) {\small \textbf{Needs Reference}\\
+    \node at (-1,0) {\textbf{Shallow Coverage}};
+    \node[align=center] at (6.5,-3.0) 
+      {\textbf{Semantically}\\
+       \textbf{Informed Coverage}
+      };
+    \draw[thick,dotted] (-3.2,-1.9) rectangle (1.2,-5.3);
+    \node[align=center] at (-1,-5) {
+        \small \textbf{Needs Reference}\\
         \small \textbf{Human Annotation}\\};
+
     \node[align=center] (y) at (3,1) {\small \textbf{Reference Only}\\};
-    \node[align=center] (z) at (6.2,0) {\small \textbf{Reference Free}\\};
+
+
+    \visible<1>{
+     \node[align=center] at (3,1) 
+        {\small \textcolor{proc}{\textbf{Reference Only}}\\};
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-1.8);
+     \draw[thick,draw=proc] (1.5,-1.8) rectangle (4.5,-4.3);
+     \node[depa] (hennignode) at (3,-2.7) {};
+     \node[] (hennigtxt) at (3,-3.1) {\nodeciteh{hennig2010learning}};
+     \node[depa] (yangnode) at (3,-3.7) {};
+     \node[] (yangtxt) at (3,-4.1) {\nodeciteh{yang2016peak}};
+    }
+    \visible<2->{
+     \draw[thick,dotted] (1.5,1.6) rectangle (4.5,-4.3);
+     \node[align=center] at (3,1) 
+        {\small \textbf{Reference Only}\\};
+     \node[dep] (hennignode) at (3,-2.7) {};
+     \node[] (hennigtxt) at (3,-3.1) {\nodecite{hennig2010learning}};
+     \node[dep] (yangnode) at (3,-3.7) {};
+     \node[] (yangtxt) at (3,-4.1) {\nodecite{yang2016peak}};
+    }
+
+    \visible<-2>{
+     \node[dep] (louisnode) at (6.5,-.5) {};
+     \node[] (louistxt) at (6.5, -.9) {\nodecite{louis2009automatically}};
+     \draw[thick,dotted] (4.6,0.6) rectangle (8.4,-1.1);
+     \node[align=center] at (6.5,0) {\small \textbf{Reference Free}\\};
+    }
+    \visible<3>{
+     \node[depa] (louisnode) at (6.5,-.5) {};
+     \node[] (louistxt) at (6.5, -.9) {\nodeciteh{louis2009automatically}};
+     \draw[thick,draw=proc] (4.6,0.6) rectangle (8.4,-1.1);
+     \node[align=center] at (6.5,0) 
+        {\small \textcolor{proc}{\textbf{Reference Free}}\\};
+    }
 
     \node[dep] (linnode) at (3,.2) {};
-    \node[] (lintxt) at (3,-.2) {\tiny \cite{lin2004rouge}};
+    \node[] (lintxt) at (3,-.2) {\nodecite{lin2004rouge}};
     \node[dep] (conroynode) at (3,-1) {};
-    \node[] (conroytxt) at (3,-1.4) {\tiny \cite{conroy2011nouveau}};
-
-    %\path [->] (A) edge (B); 
-
-    \node[dep] (teufelnode) at (0,-2.2) {};
-    \node[] (teufeltxt) at (0,-2.6) {\tiny \cite{teufel2004evaluating}};
-    \node[dep] (nenkovanode) at (0,-3.2) {};
-    \node[] (nenkovatxt) at (0,-3.6) {\tiny \cite{nenkova2007pyramid}};
-    \node[dep] (hennignode) at (3,-2.7) {};
-    \node[] (hennigtxt) at (3,-3.1) {\tiny \cite{hennig2010learning}};
-    \node[dep] (yangnode) at (3,-3.7) {};
-    \node[] (yangtxt) at (3,-4.1) {\tiny \cite{yang2016peak}};
-
-    \node[dep] (louisnode) at (6.2,-.5) {};
-    \node[] (louistxt) at (6.2, -.9) {\tiny \cite{louis2009automatically}};
+    \node[] (conroytxt) at (3,-1.4) {\nodecite{conroy2011nouveau}};
+    \node[dep] (teufelnode) at (-1,-2.2) {};
+    \node[] (teufeltxt) at (-1,-2.6) {\nodecite{teufel2004evaluating}};
+    \node[dep] (nenkovanode) at (-1,-3.2) {};
+    \node[] (nenkovatxt) at (-1,-3.6) {\nodecite{nenkova2007pyramid}};
     \path [->] (nenkovanode) edge (hennignode); 
     \path [->] (nenkovanode) edge (yangnode); 
 
-\
-
-
-\visible<1>{
-  \node[depa] (hennignode) at (3,-2.7) {};
-  \node[] (hennigtxt) at (3,-3.1) {\tiny \textcolor{green}{\cite{hennig2010learning}}};
-  \node[depa] (yangnode) at (3,-3.7) {};
-  \node[] (yangtxt) at (3,-4.1) {\tiny \textcolor{green}{\cite{yang2016peak}}};
-  \node[align=center] (y) at (3,1) {
-      \small \textcolor{green}{\textbf{Reference Only}}\\};
-  \draw[thick,draw=green] (1.7,-1.8) rectangle (4.3,-4.3);
-}
-\visible<3>{
-    \node[depa] (louisnode) at (6.2,-.5) {};
-    \node[] (louistxt) at (6.2, -.9) {\tiny \textcolor{green}{\cite{louis2009automatically}}};
-   \draw[thick,draw=green] (4.9,0.6) rectangle (7.5,-1.1);
-  \node[align=center] (z) at (6.2,0) {\small \textcolor{green}{\textbf{Reference Free}}\\};
-}
-\end{tikzpicture}
-
+   \end{tikzpicture}
+  \end{figure}
+ }
 \end{frame}
 
 
 
 \begin{frame}{Evaluation without Human Models}
-\cite{louis2009automatically} -- examines correlation between input/summary 
+\textbf{\cite{louis2009automatically}} \\
+Examines correlation between
+    input/summary 
     features and TAC08 responsiveness and pyramid scores.
-\begin{itemize}
+ \begin{itemize}
         \small
-    \item (across systems) Jensen-Shannon (JS) divergence highly correlated 
-        with metrics \\
-        Pyramid $-.88\;\;\;\;\;$ Respons. $-.74$  
- %$\displaystyle JS(S||I) = \frac{1}{2}\Big(KL(S||I) + KL(I||S) \Big)$
-\item (within topics) correlations vary widely per document set \\
-\item \only<1>{establishing system rankings seems possible w/o references}
-    \only<2->{\textcolor{green}{establishing system rankings seems possible 
+    \proit{(Across systems) Jensen-Shannon (JS) divergence correlated 
+        with} 
+    \begin{figure}[h]
+     \centering
+     \begin{tabular}{| l | l |}       
+      \hline
+      Pyramid $-.88$ & Responsiveness. $-.74$  \\
+      \hline
+     \end{tabular}
+    \end{figure}
+    \conit{(Within topics) Correlations vary widely per document set.}
+    \only<1>{\item Establishing system rankings seems possible w/o references}
+    \only<2->{\proit{Establishing system rankings seems possible 
         w/o references}}
-\item \only<-2>{(query-focused) high correlation between summary/inputs 
-        w/o using query}
-    \only<3>{\textcolor{red}{(query-focused) high correlation between 
-        summary/inputs w/o using query}}
-%\item (update) using background documents results in worse correlation
-\end{itemize}
+    \only<-2>{\item Unclear what would happen if JS div. explicitly minimized.}
+    \only<3>{\conit{Unclear what would happen if JS div. explicitly minimized.}}
+ \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Summary Evaluation}
 
     \begin{itemize}
-        \item \textcolor{green!70}{ROUGE highly correlated with pyramid and 
-            responsiveness,\\
-            while being easy to compute}
-        \item Availibility of ROUGE has shaped summarization development
-
+        \item Research focus on content selection evaluation: \\
+            Pyramid, Factoid, ROUGE
+            ~\\~\\
+        \proit{Despite flaws, ROUGE-2 is simple and highly correlated with 
+            human metrics}
+            ~\\~\\
+        \conit{More research is needed on how linguistic quality interacts 
+            with content selection scores.}
     \end{itemize}
 
 \end{frame}
@@ -561,44 +601,43 @@ on background set summary
 \end{frame}
 
 \begin{frame}{Extractive Summarization}
-    Why is extractive summarization so popular?
-    \begin{itemize}
-        \item Text generation is hard!
-        \item Semantic representations are brittle, low coverage. 
-        \item Surface level features (i.e. words) have straightforward 
-            correspondence to ROUGE and human coverage metrics
+  \textbf{Why is extractive summarization so popular?}\\
+  ~\\
+  \begin{itemize}
+    \item Text generation is hard!
+    ~\\~\\    
+    \item Semantic representations are brittle, low coverage. 
+    ~\\~\\
+    \item Surface level features (i.e. words) have straightforward \\
+           \spit correspondence to ROUGE and human coverage metrics.
     \end{itemize}
 \end{frame}
 
-
-
-%\begin{frame}{Overview}
-%Ranking Sentences By Term Importance
-%\begin{itemize}
-%    \item Topic Signatures \cite{lin2000automated,conroy2005classy}
-%    \item Topic Models \cite{titov2008joint}
-%    \item Ngram Coverage \cite{gillick2009global,lin2011class,liu2011sxsw}
-%    \item Graph Centrality \cite{erkan2004lexrank}
-%    \item Structural/Discourse Features \cite{maskey2005comparing}
-%\end{itemize}
-%\end{frame}
-
 \begin{frame}{Summarization in Different Domains}
-    \uncover<2>{\textbf{Retrospective Summarization}}
-    \begin{itemize}
-        \item[] \includegraphics[scale=.017]{news_icon}~ \textbf{News} 
-    \begin{itemize}
-        \item Text {\tiny\cite{lin2000automated,erkan2004lexrank,conroy2005classy,lin2011class}}
-        \item Broadcast/Speech {\tiny\cite{maskey2005comparing}}
+  \uncover<2>{{\large\textbf{Retrospective Summarization}}}
+  \begin{itemize}
+    \item[] \includegraphics[scale=.017]{news_icon}~ \textbf{News} 
+      \begin{itemize}
+        \item \textit{Text }
+            {\fontsize{6.8pt}{12pt}\selectfont\citep{lin2000automated,erkan2004lexrank,conroy2005classy,lin2011class}}
+        \item \textit{Broadcast/Speech} {\scriptsize\citep{maskey2005comparing}}
     \end{itemize}
-\item[] \includegraphics[scale=.02]{meeting_icon}~ \textbf{Meetings  } {\tiny\cite{gillick2009global}}
-\item[] \includegraphics[scale=.02]{rating_icon}~ \textbf{Opinions/Reviews} {\tiny\cite{titov2008joint}}
-\item[] \includegraphics[scale=.02]{tweet_icon}~ \textbf{Microblogs/Twitter} {\tiny\cite{liu2011sxsw}}
+~\\
+\item[] \includegraphics[scale=.02]{meeting_icon}~ \textbf{Meetings  } 
+    {\scriptsize\citep{gillick2009global}}
+~\\~\\
+\item[] \includegraphics[scale=.02]{rating_icon}~ \textbf{Opinions/Reviews} 
+    {\scriptsize\citep{titov2008joint}}
+~\\~\\
+\item[] \includegraphics[scale=.02]{tweet_icon}~ \textbf{Microblogs/Twitter} 
+    {\scriptsize\citep{liu2011sxsw}}
+~\\~\\
     \end{itemize}
     \uncover<2>{
-        \textbf{Temporal Summarization}
+        {\large\textbf{Temporal Summarization}}
     \begin{itemize}
-        \item[] \includegraphics[scale=.017]{news_icon}~ \textbf{News text} {\tiny\cite{guo2013updating,mccreadie2014incremental}}
+        \item[] \includegraphics[scale=.017]{news_icon}~ \textbf{News text} 
+        {\scriptsize\citep{guo2013updating,mccreadie2014incremental}}
     \end{itemize}
     }
 \end{frame}
@@ -610,44 +649,43 @@ on background set summary
     \begin{tikzpicture}
  
       \visible<1>{ 
-       \node (C) at (4.7,-2) {Ranking};
-       \draw[opacity=.2] (4.7,-.5) circle (2.0cm);
-       \node at (4.7,0) {\includegraphics[scale=.017]{news_icon}};
-       \node at (4.7,-.3) {\tiny \cite{lin2000automated}};
-       \node at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
+       \node (C) at (4.7,-1.6) {\textbf{Ranking}};
+       \draw[opacity=.2] (4.7,-.6) circle (1.5cm);
+       \node at (4.7,.1) {\includegraphics[scale=.017]{news_icon}};
+       \node at (4.7,-.3) {\scriptsize \cite{lin2000automated}};
+       \node at (4.7,-.6) {\scriptsize \cite{erkan2004lexrank}};
       }
       \visible<2>{ 
-       \node[text=red,opacity=.7] (C) at (4.7,-2) {Ranking};
-       \draw[opacity=.2,draw=red,opacity=.7] (4.7,-.5) circle (2.0cm);
-       \node at (4.7,0) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (4.7,-.3) {\tiny \cite{lin2000automated}};
-       \node[text=red,opacity=.7] at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
+       \node[text=red,opacity=.7] (C) at (4.7,-1.6) {\textbf{Ranking}};
+       \draw[opacity=.2,draw=red,opacity=.7] (4.7,-.6) circle (1.5cm);
+       \node at (4.7,.1) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (4.7,-.3) {\scriptsize \cite{lin2000automated}};
+       \node[text=red,opacity=.7] at (4.7,-.6) {\scriptsize \cite{erkan2004lexrank}};
       }
 
-      \node[] (C) at (6.2,4.5) {Regression};
-      \draw[opacity=.2] (6.1,3.2) circle (1.8cm);
-      \node (C) at (6.1,3.5) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (6.1,3.2) {\tiny \cite{guo2013updating}};
-      \node (C) at (6.1,2.9) {\tiny \cite{mccreadie2014incremental}};
+      \node (C) at (3.1,2.5) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (3.1,2.0) {\scriptsize \cite{guo2013updating}};
+      \node (C) at (3.1,1.7) {\scriptsize \cite{mccreadie2014incremental}};
      
-      \node (C) at (1.5,5) {Classification};
-      \draw[opacity=.2] (1.5,3) circle (2.5cm);
-      \node (C) at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-      \node (C) at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
-      \node (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
+      \node[align=center] (C) at (1.9,5) {\textbf{Classification}\\ 
+                                          \textbf{\& Regression}};
+      \draw[opacity=.2] (1.9,3) circle (2.7cm);
+      \node (C) at (1.1,4) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (1.1,3.6) {\scriptsize\cite{maskey2005comparing}};
+      \node (C) at (1.1,3.2) {\includegraphics[scale=.022]{rating_icon}};
+      \node (C) at (1.1,2.8) {\scriptsize\cite{titov2008joint}};
      
-      \node (C) at (.7,1.7) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (.7,1.3) {\tiny \cite{conroy2005classy}};
+      \node (C) at (.5,1.7) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (.5,1.3) {\scriptsize\cite{conroy2005classy}};
      
-      \node[] (C) at (0,-2) {Optimization};
-      \draw[opacity=.2] (0,0) circle (2.5cm);
-      \node (C) at (-1.0,.4) {\includegraphics[scale=.017]{tweet_icon}};
-      \node (C) at (-1.0,.1) {\tiny \cite{liu2011sxsw}};
-      \node (C) at (-1,-.4) {\includegraphics[scale=.022]{meeting_icon}};
-      \node (C) at (-1,-.7) {\tiny \cite{gillick2009global}};
-      \node (C) at (1.1,0) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (1.1,-.3) {\tiny \cite{lin2011class}};
+      \node[] (C) at (-.2,-1.6) {\textbf{Optimization}};
+      \draw[opacity=.2] (-.2,0.2) circle (2.3cm);
+      \node (C) at (-1.2,.4) {\includegraphics[scale=.017]{tweet_icon}};
+      \node (C) at (-1.2,.1) {\scriptsize\cite{liu2011sxsw}};
+      \node (C) at (-1.2,-.4) {\includegraphics[scale=.022]{meeting_icon}};
+      \node (C) at (-1.2,-.7) {\scriptsize\cite{gillick2009global}};
+      \node (C) at (.8,0) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (.8,-.3) {\scriptsize\cite{lin2011class}};
       
    \end{tikzpicture}
  \end{figure}
@@ -658,22 +696,17 @@ on background set summary
         \item Apply a ranking over sentences, and 
             ~\\
             ~\\
+            ~\\
         \item greedily add the top sentences,\\
-            stopping when length
+            \spit stopping when length
             constraint is reached.
     \end{enumerate}
 
-    
-
-
 \end{frame}
 
-
-
-
-\begin{frame}[t]{Sentence Ranking}
+\begin{frame}[t]{Extraction by Ranking}
     \begin{itemize}
-        \uncover<2->{\item \textbf{Centroid Similarity} cosine similarity of tf$\cdot$idf vector to the mean input tf$\cdot$idf vector  {\tiny \cite{erkan2004lexrank}}}
+        \uncover<2->{\item \textbf{Centroid Similarity} Cosine similarity of tf$\cdot$idf vector to the mean input tf$\cdot$idf vector.  {\scriptsize \citep{erkan2004lexrank}}}
   \only<2>{
     \begin{figure}[h]
       \centering
@@ -739,10 +772,10 @@ on background set summary
         \end{tikzpicture}
       \end{figure}
     }
-        \uncover<3->{\item \textbf{Topic Signatures} rank sentences by number 
-            of topically important ngrams {\tiny\cite{lin2000automated}}}
-%\uncover<3->{\begin{itemize}\item[] \small{\textit{topic signature} $\triangleq$ ngram unlikely to occur with such high frequency as determined by log-likelihood ratio} \end{itemize}}
-            \only<3>{
+        \uncover<3->{\item \textbf{Topic Signatures} Rank sentences by number 
+            of topically important ngrams. 
+            {\scriptsize\citep{lin2000automated}}}
+        \only<3>{
   \begin{figure}[h]
     \centering
     ~\\~\\
@@ -782,16 +815,29 @@ on background set summary
     \end{tikzpicture}
   \end{figure}
 }
-        \uncover<4->{\item \textbf{LexRank} rank sentences by graph centrality
-            {\tiny \cite{erkan2004lexrank}  }}
-\uncover<4->{\begin{itemize}\item[] \small{Sentences $\triangleq$ nodes; edges determined
-    by thresholded/weighted sent. similarity; rank computed with PageRank} \end{itemize}}
+        \uncover<4->{\item \textbf{LexRank} Rank sentences by graph centrality.
+            {\scriptsize \citep{erkan2004lexrank}  }}
 
-    \only<4>{
-        \begin{figure}[h]
-            ~\\~\\
-            \centering
-            \begin{tikzpicture}
+
+    \end{itemize}
+     
+
+\only<4->{
+~\\~\\
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        %Content
+\centering
+        \begin{itemize}
+\small
+            \item Sentences $\triangleq$ nodes.
+            \item Edges determined by cosine similarity.
+            \item Rank computed with PageRank.
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+\centering
+            \begin{tikzpicture}[baseline=5ex]
             \node[shape=circle,fill=red!20,thick,draw=black] (1) at (0,0) 
                     {$s_1$};
             \node[shape=circle,fill=red!20,thick,draw=black] (2) at (2,1.5) 
@@ -809,93 +855,103 @@ on background set summary
                     \path[draw=black,line width=.03cm] (3) -- (4);
 
 
-            \end{tikzpicture}
-        \end{figure}
-    }   
+            \end{tikzpicture} 
+     \end{column}
+\end{columns}
+    }  
 
-    \end{itemize}
 \end{frame}
 
-
-
 \begin{frame}{Extraction by Ranking}
-Sentence Ranking Methods
+Sentence Ranking Methods:
 \begin{itemize}
-  \item \only<1>{Simple but effective baselines}
-    \only<2->{\textcolor{green}{Simple but effective baselines}}
-  \item \only<-2>{Ranking methods need redundancy penalty/diversity reward}
-    \only<3->{\textcolor{red}{Ranking methods need redundancy 
-        penalty/diversity reward}}
-    \item \only<-3>{ranking implies consistent pairwise ordering \\
-        (which definitely does not hold)}
-        \only<4>{\textcolor{red}{ranking implies consistent pairwise ordering 
-            \\ (which definitely does not hold)}}
+    \only<1>{\item Simple but effective baselines.}
+    \only<2->{\proit{Simple but effective baselines.}}
+~\\~\\
+    \only<-2>{\item Ranking methods need redundancy penalty/diversity reward}
+    \only<3->{\conit{Ranking methods need redundancy 
+        penalty/diversity reward.}}
+~\\~\\
+    \only<-3>{\item Ranking implies consistent pairwise ordering \\
+        (which definitely does not hold).}
+    \only<4>{\conit{Ranking implies consistent pairwise ordering 
+            \\ (which definitely does not hold).}}
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{
-    \only<1>{Extraction by Ranking}\only<2>{Extractive Summarization}\only<3>{Extraction by Classification}}
+    \only<1>{Extraction by Ranking}\only<2>{Extractive Summarization}\only<3>{Extraction by Classification \& Regression}}
   \begin{figure}[!h]
     \centering 
     \begin{tikzpicture}
  
-      \visible<1>{  
-       \node[text=red,opacity=.7] (C) at (4.7,-2) {Ranking};
-       \draw[opacity=.2,draw=red,opacity=.7] (4.7,-.5) circle (2.0cm);
-       \node at (4.7,0) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (4.7,-.3) {\tiny \cite{lin2000automated}};
-       \node[text=red,opacity=.7] at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
+      \visible<2->{ 
+       \node (C) at (4.7,-1.6) {\textbf{Ranking}};
+       \draw[opacity=.2] (4.7,-.6) circle (1.5cm);
+       \node at (4.7,.1) {\includegraphics[scale=.017]{news_icon}};
+       \node at (4.7,-.3) {\scriptsize \cite{lin2000automated}};
+       \node at (4.7,-.6) {\scriptsize \cite{erkan2004lexrank}};
       }
-
-      \visible<2->{  
-       \node at (4.7,-2) {Ranking};
-       \draw[opacity=.2] (4.7,-.5) circle (2.0cm);
-       \node at (4.7,0) {\includegraphics[scale=.017]{news_icon}};
-       \node at (4.7,-.3) {\tiny \cite{lin2000automated}};
-       \node at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
+      \visible<1>{ 
+       \node[text=red,opacity=.7] (C) at (4.7,-1.6) {\textbf{Ranking}};
+       \draw[opacity=.2,draw=red,opacity=.7] (4.7,-.6) circle (1.5cm);
+       \node at (4.7,.1) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (4.7,-.3) {\scriptsize \cite{lin2000automated}};
+       \node[text=red,opacity=.7] at (4.7,-.6) {\scriptsize \cite{erkan2004lexrank}};
       }
-       \node[] (C) at (6.2,4.5) {Regression};
-       \draw[opacity=.2] (6.1,3.2) circle (1.8cm);
-       \node (C) at (6.1,3.5) {\includegraphics[scale=.017]{news_icon}};
-       \node (C) at (6.1,3.2) {\tiny \cite{guo2013updating}};
-       \node (C) at (6.1,2.9) {\tiny \cite{mccreadie2014incremental}};
-
 
       \visible<-2>{
-      \node (C) at (1.5,5) {Classification};
-      \draw[opacity=.2] (1.5,3) circle (2.5cm);
-      \node (C) at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-      \node (C) at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
-      \node (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
+       \node (C) at (3.1,2.5) {\includegraphics[scale=.017]{news_icon}};
+       \node (C) at (3.1,2.0) {\scriptsize \cite{guo2013updating}};
+       \node (C) at (3.1,1.7) {\scriptsize \cite{mccreadie2014incremental}};
      
-      \node (C) at (.7,1.7) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (.7,1.3) {\tiny \cite{conroy2005classy}};
-      }
-
-      \visible<3>{
-      \node[text=red,opacity=.7] (C) at (1.5,5) {Classification};
-      \draw[opacity=.2,draw=red,opacity=.7] (1.5,3) circle (2.5cm);
-      \node (C) at (1.5,4) {\includegraphics[scale=.012]{news_icon}};
-      \node[text=red,opacity=.7] (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-      \node (C) at (1.5,3.3) {\includegraphics[scale=.025]{rating_icon}};
-      \node[text=red,opacity=.7] (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
+       \node[align=center] (C) at (1.9,5) {\textbf{Classification}\\ 
+                                          \textbf{\& Regression}};
+       \draw[opacity=.2] (1.9,3) circle (2.7cm);
+       \node (C) at (1.1,4) {\includegraphics[scale=.017]{news_icon}};
+       \node (C) at (1.1,3.6) {\scriptsize\cite{maskey2005comparing}};
+       \node (C) at (1.1,3.2) {\includegraphics[scale=.022]{rating_icon}};
+       \node (C) at (1.1,2.8) {\scriptsize\cite{titov2008joint}};
      
-      \node (C) at (.7,1.7) {\includegraphics[scale=.022]{news_icon}};
-      \node[text=red,opacity=.7] at (.7,1.3) {\tiny \cite{conroy2005classy}};
-      }
- 
+       \node (C) at (.5,1.7) {\includegraphics[scale=.017]{news_icon}};
+       \node (C) at (.5,1.3) {\scriptsize\cite{conroy2005classy}};
+      }     
+      \visible<3->{
+       \node at (3.1,2.5) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (3.1,2.0) 
+            {\scriptsize \cite{guo2013updating}};
+       \node[text=red,opacity=.7] at (3.1,1.7) 
+            {\scriptsize \cite{mccreadie2014incremental}};
+     
+       \node[text=red,opacity=.7,align=center] at (1.9,5) 
+            {\textbf{Classification}\\ 
+             \textbf{\& Regression}};
+       \draw[opacity=.2,draw=red,opacity=.7] (1.9,3) circle (2.7cm);
+       \node[text=red,opacity=.7] at (1.1,4) 
+            {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (1.1,3.6) 
+            {\scriptsize\cite{maskey2005comparing}};
+       \node[text=red,opacity=.7] at (1.1,3.2) 
+            {\includegraphics[scale=.025]{rating_icon}};
+       \node[text=red,opacity=.7] at (1.1,2.8) 
+            {\scriptsize\cite{titov2008joint}};
+     
+       \node at (.5,1.7) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7]  at (.5,1.3) 
+            {\scriptsize\cite{conroy2005classy}};
+      }  
 
-      \node[] (C) at (0,-2) {Optimization};
-      \draw[opacity=.2] (0,0) circle (2.5cm);
-      \node (C) at (-1.0,.4) {\includegraphics[scale=.017]{tweet_icon}};
-      \node (C) at (-1.0,.1) {\tiny \cite{liu2011sxsw}};
-      \node (C) at (-1,-.4) {\includegraphics[scale=.022]{meeting_icon}};
-      \node (C) at (-1,-.7) {\tiny \cite{gillick2009global}};
-      \node (C) at (1.1,0) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (1.1,-.3) {\tiny \cite{lin2011class}};
-      
+      \node[] (C) at (-.2,-1.6) {\textbf{Optimization}};
+      \draw[opacity=.2] (-.2,0.2) circle (2.3cm);
+      \node (C) at (-1.2,.4) {\includegraphics[scale=.017]{tweet_icon}};
+      \node (C) at (-1.2,.1) {\scriptsize\cite{liu2011sxsw}};
+      \node (C) at (-1.2,-.4) {\includegraphics[scale=.022]{meeting_icon}};
+      \node (C) at (-1.2,-.7) {\scriptsize\cite{gillick2009global}};
+      \node (C) at (.8,0) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (.8,-.3) {\scriptsize\cite{lin2011class}};
+
+     
    \end{tikzpicture}
  \end{figure}
 \end{frame}
@@ -906,42 +962,17 @@ Sentence Ranking Methods
 
 \begin{frame}{Extraction by Classification}
     \begin{itemize}
-        \uncover<2->{\item \textbf{Bayesian Network} classify sentences using 
+        \uncover<2->{\item \textbf{Bayesian Network} Classify sentences using 
                 lexical, acoustic, structural, and discourse features. 
-                Surprisingly, summarization seems possible without lexical 
-                features!
-        {\tiny \cite{maskey2005comparing}}}
+        {\scriptsize \cite{maskey2005comparing}}}
 
 
-        \uncover<3->{\item \textbf{Hidden Markov Model} predict sequence of
+        \uncover<3->{\item \textbf{Hidden Markov Model} Predict sequence of
             sentences to be included in summary, 
-            based on query term and topic signature features
-        {\tiny \cite{conroy2005classy}}}\\
-%    \uncover<3->{
-%        { \centering 
-% \begin{tikzpicture}
-%
-%    \draw (0,2) circle (.26cm);
-%    \draw (1,2) circle (.26cm);
-%    \draw (2,2) circle (.26cm);
-%    \draw (0,1) circle (.26cm);
-%    \draw (1,1) circle (.26cm);
-%    \draw (2,1) circle (.26cm);
-%    \node (X) at (0,2) {$y_1$};
-%    \node (Y) at (1,2) {$y_2$};
-%    \node (Z) at (2,2) {$y_3$};
-%    \node (A) at (0,1) {$s_1$};
-%    \node (B) at (1,1) {$s_2$};
-%    \node (C) at (2,1) {$s_3$};
-%    \path[->] (X) edge (A);
-%    \path[->] (X) edge (Y);
-%    \path[->] (Y) edge (B);
-%    \path[->] (Y) edge (Z);
-%    \path[->] (Z) edge (C);
-% \end{tikzpicture}
-%}}
-\uncover<4->{\item \textbf{Multi Aspect Sentiment} classify sentences as 
-        belonging to an aspect/rating {\tiny \cite{titov2008joint}  }
+            based on query term and topic signature features.
+        {\scriptsize \cite{conroy2005classy}}}\\
+\uncover<4->{\item \textbf{Multi Aspect Sentiment} Classify sentences as 
+        belonging to an aspect/rating. {\scriptsize \cite{titov2008joint}  }
         ~\\
         ~\\
         \begin{tabular}{|p{9cm}|}
@@ -958,107 +989,25 @@ Sentence Ranking Methods
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Extraction by Classification}
-
-Sentence Classification Methods:
-\begin{itemize}
-    \item \only<1>{Very little labeled data; limited power of features for 
-        prediction}
-        \only<2->{\textcolor{red}{Very little labeled data; limited power of 
-            features for prediction}}
-        \item \only<-2>{Classification objective unaware of length constraints;
-            \\often requires additionall filtering step.}
-            \only<3>{\textcolor{red}{Classification objective unaware of 
-                length constraints;}
-            \\often requires additionall filtering step.}
-\end{itemize}
-\end{frame}
-
-
-
-\begin{frame}{
-    \only<1>{Extraction by Classification}\only<2>{Extractive Summarization}\only<3>{Extraction by Regression}}
-  \begin{figure}[!h]
-    \centering 
-    \begin{tikzpicture}
- 
-      \node[] (C) at (4.7,-2) {Ranking};
-      \draw[opacity=.2] (4.7,-.5) circle (2.0cm);
-      \node (C) at (4.7,0) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (4.7,-.3) {\tiny \cite{lin2000automated}};
-      \node (C) at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
-      
-      \visible<3>{
-       \node[text=red,opacity=.7] at (6.2,4.5) {Regression};
-       \draw[opacity=.2,draw=red,opacity=.7] (6.1,3.2) circle (1.8cm);
-       \node at (6.1,3.5) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (6.1,3.2) {\tiny \cite{guo2013updating}};
-       \node[text=red,opacity=.7] at (6.1,2.9) 
-            {\tiny \cite{mccreadie2014incremental}};
-      }
-      \visible<-2>{
-       \node at (6.2,4.5) {Regression};
-       \draw[opacity=.2] (6.1,3.2) circle (1.8cm);
-       \node at (6.1,3.5) {\includegraphics[scale=.017]{news_icon}};
-       \node at (6.1,3.2) {\tiny \cite{guo2013updating}};
-       \node at (6.1,2.9) {\tiny \cite{mccreadie2014incremental}};
-      }
-      
-      \visible<2->{
-       \node at (1.5,5) {Classification};
-       \draw[opacity=.2] (1.5,3) circle (2.5cm);
-       \node at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
-       \node at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-       \node at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
-       \node at (1.5,3.0) {\tiny \cite{titov2008joint}};
-     
-       \node at (.7,1.7) {\includegraphics[scale=.017]{news_icon}};
-       \node at (.7,1.3) {\tiny \cite{conroy2005classy}};
-      }
-      \visible<1>{
-       \node[text=red,opacity=.7] at (1.5,5) {Classification};
-       \draw[opacity=.2,draw=red,opacity=.7] (1.5,3) circle (2.5cm);
-       \node at (1.5,4) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (1.5,3.7) 
-            {\tiny \cite{maskey2005comparing}};
-       \node at (1.5,3.3) {\includegraphics[scale=.025]{rating_icon}};
-       \node[text=red,opacity=.7] at (1.5,3.0) {\tiny \cite{titov2008joint}};
-     
-       \node (C) at (.7,1.7) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (.7,1.3) {\tiny \cite{conroy2005classy}};
-      }
-
-      \node[] (C) at (0,-2) {Optimization};
-      \draw[opacity=.2] (0,0) circle (2.5cm);
-      \node (C) at (-1.0,.4) {\includegraphics[scale=.017]{tweet_icon}};
-      \node (C) at (-1.0,.1) {\tiny \cite{liu2011sxsw}};
-      \node (C) at (-1,-.4) {\includegraphics[scale=.022]{meeting_icon}};
-      \node (C) at (-1,-.7) {\tiny \cite{gillick2009global}};
-      \node (C) at (1.1,0) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (1.1,-.3) {\tiny \cite{lin2011class}};
-      
-   \end{tikzpicture}
- \end{figure}
-\end{frame}
 
 \begin{frame}{Extraction by Regression}
 
     Explicitly model each sentence's contribution to the final evaluation
         metric (typically ROUGE).
-
-\end{frame}
-
-\begin{frame}{Extraction by Regression}
+~\\
+~\\
+\uncover<2>{
     \begin{itemize}
- \item \textbf{Regression w/ Cutoff} tune/predict rank cutoff using 
-        sentence level features, similarity features, previous sentence 
-        selection features
-        {\tiny \cite{guo2013updating,mccreadie2014incremental}  }
+ \item \textbf{Regression w/ Cutoff} Tune/predict rank cutoff using 
+        sentence\\\spit level features, similarity features, previous sentence 
+        selection\\ \spit features.
+        {\scriptsize\citep{guo2013updating,mccreadie2014incremental}  }
     \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Extraction by Regression}
-    \cite{guo2013updating} -- add sentences at each time step that are likely
+    \citep{guo2013updating} -- add sentences at each time step that are likely
     to improve ROUGE precision\\
   ~\\ 
 \begin{itemize}
@@ -1074,12 +1023,45 @@ Sentence Classification Methods:
     $\delta P(s|\mathcal{S}) > \tau_{\delta P}$ to summary}}
     \uncover<3->{
     Predict a rank cutoff $\theta$, s.t. $\{s_1,\ldots, s_\theta\}$ optimizes
-    evaluation metric \cite{mccreadie2014incremental}
+    evaluation metric \citep{mccreadie2014incremental}
     }
-\uncover<4->{\item \textcolor{red}{features dependent on $\mathcal{S}$ 
-        introduce exploration concerns (reinforcement learning)}}
-    \end{itemize}
+\end{itemize}
 \end{frame}
+
+
+
+
+\begin{frame}{Extraction by Classification}
+
+ Classification Methods:
+ \begin{itemize}
+  \only<1>{\item Very little labeled data; limited power of features for 
+        prediction}
+  \only<2->{\conit{Very little labeled data; limited power of 
+            features for prediction}}
+    \end{itemize}
+~\\
+ Regression Methods:
+\begin{itemize}
+ \only<-2>{\item With reference summaries, can create lots of training data.}
+ \only<3->{\proit{With reference summaries, can create lots of training data.}}
+\end{itemize} 
+~\\
+
+Classification \& Regression Methods:
+\begin{itemize}
+  \only<-3>{\item Training objective unaware of redundancy unless conditioning
+            on summary $\mathcal{S}$.}
+  \only<4->{\conit{Training objective unaware of redundancy unless conditioning
+            on summary $\mathcal{S}$.}}
+  \only<-4>{\item Conditioning on $\mathcal{S}$ 
+        introduce exploration concerns (reinforcement learning).}
+  \only<5>{\conit{Conditioning on $\mathcal{S}$ 
+        introduce exploration concerns (reinforcement learning).}}
+    \end{itemize}
+
+\end{frame}
+
 
 
 
@@ -1088,66 +1070,84 @@ Sentence Classification Methods:
   \begin{figure}[!h]
     \centering 
     \begin{tikzpicture}
- 
-      \node[] (C) at (4.7,-2) {Ranking};
-      \draw[opacity=.2] (4.7,-.5) circle (2.0cm);
-      \node (C) at (4.7,0) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (4.7,-.3) {\tiny \cite{lin2000automated}};
-      \node (C) at (4.7,-.6) {\tiny \cite{erkan2004lexrank}};
-        
+      \node at (4.7,-1.6) {\textbf{Ranking}};
+      \draw[opacity=.2] (4.7,-.6) circle (1.5cm);
+      \node at (4.7,.1) {\includegraphics[scale=.017]{news_icon}};
+      \node at (4.7,-.3) {\scriptsize \cite{lin2000automated}};
+      \node at (4.7,-.6) {\scriptsize \cite{erkan2004lexrank}};
+
+    
       \visible<1>{
-      \node[text=red,opacity=.7] (C) at (6.2,4.5) {Regression};
-      \draw[opacity=.2,draw=red,opacity=.7] (6.1,3.2) circle (1.8cm);
-      \node (C) at (6.1,3.5) {\includegraphics[scale=.022]{news_icon}};
-      \node[text=red,opacity=.7] at (6.1,3.2) {\tiny \cite{guo2013updating}};
-      \node[text=red,opacity=.7] at (6.1,2.9) {\tiny \cite{mccreadie2014incremental}};
+       \node at (3.1,2.5) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (3.1,2.0) 
+            {\scriptsize \cite{guo2013updating}};
+       \node[text=red,opacity=.7] at (3.1,1.7) 
+            {\scriptsize \cite{mccreadie2014incremental}};
+     
+       \node[text=red,opacity=.7,align=center] at (1.9,5) 
+            {\textbf{Classification}\\ 
+             \textbf{\& Regression}};
+       \draw[opacity=.2,draw=red,opacity=.7] (1.9,3) circle (2.7cm);
+       \node[text=red,opacity=.7] at (1.1,4) 
+            {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (1.1,3.6) 
+            {\scriptsize\cite{maskey2005comparing}};
+       \node[text=red,opacity=.7] at (1.1,3.2) 
+            {\includegraphics[scale=.025]{rating_icon}};
+       \node[text=red,opacity=.7] at (1.1,2.8) 
+            {\scriptsize\cite{titov2008joint}};
+     
+       \node at (.5,1.7) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7]  at (.5,1.3) 
+            {\scriptsize\cite{conroy2005classy}};
       }
 
-      \visible<2->{
-      \node[] (C) at (6.2,4.5) {Regression};
-      \draw[opacity=.2] (6.1,3.2) circle (1.8cm);
-      \node (C) at (6.1,3.5) {\includegraphics[scale=.017]{news_icon}};
-      \node (C) at (6.1,3.2) {\tiny \cite{guo2013updating}};
-      \node (C) at (6.1,2.9) {\tiny \cite{mccreadie2014incremental}};
-        }
+      \visible<2->{ 
+       \node at (3.1,2.5) {\includegraphics[scale=.017]{news_icon}};
+       \node at (3.1,2.0) {\scriptsize \cite{guo2013updating}};
+       \node at (3.1,1.7) {\scriptsize \cite{mccreadie2014incremental}};
+       \node[align=center] at (1.9,5) {\textbf{Classification}\\ 
+                                          \textbf{\& Regression}};
+       \draw[opacity=.2] (1.9,3) circle (2.7cm);
+       \node (C) at (1.1,4) {\includegraphics[scale=.017]{news_icon}};
+       \node (C) at (1.1,3.6) {\scriptsize\cite{maskey2005comparing}};
+       \node (C) at (1.1,3.2) {\includegraphics[scale=.022]{rating_icon}};
+       \node (C) at (1.1,2.8) {\scriptsize\cite{titov2008joint}};
+      }
+      \visible<2>{ 
+       \node (C) at (.5,1.7) {\includegraphics[scale=.017]{news_icon}};
+       \node (C) at (.5,1.3) {\scriptsize\cite{conroy2005classy}};
+      }     
+      \visible<3>{ 
+       \node at (.5,1.7) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (.5,1.3) 
+         {\scriptsize\cite{conroy2005classy}};
+      }     
 
-       \node (C) at (1.5,5) {Classification};
-       \draw[opacity=.2] (1.5,3) circle (2.5cm);
-       \node (C) at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
-       \node (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-       \node (C) at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
-       \node (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
-      
       \visible<-2>{
-       \node (C) at (.7,1.7) {\includegraphics[scale=.017]{news_icon}};
-       \node (C) at (.7,1.3) {\tiny \cite{conroy2005classy}};
-      }
-      \visible<3->{
-       \node at (.7,1.7) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (.7,1.3) {\tiny \cite{conroy2005classy}};
+      \node[] (C) at (-.2,-1.6) {\textbf{Optimization}};
+      \draw[opacity=.2] (-.2,0.2) circle (2.3cm);
+      \node (C) at (-1.2,.4) {\includegraphics[scale=.017]{tweet_icon}};
+      \node (C) at (-1.2,.1) {\scriptsize\cite{liu2011sxsw}};
+      \node (C) at (-1.2,-.4) {\includegraphics[scale=.022]{meeting_icon}};
+      \node (C) at (-1.2,-.7) {\scriptsize\cite{gillick2009global}};
+      \node (C) at (.8,0) {\includegraphics[scale=.017]{news_icon}};
+      \node (C) at (.8,-.3) {\scriptsize\cite{lin2011class}};
       }
 
-   
-      \visible<-2>{
-       \node[] (C) at (0,-2) {Optimization};
-       \draw[opacity=.2] (0,0) circle (2.5cm);
-       \node (C) at (-1.0,.4) {\includegraphics[scale=.017]{tweet_icon}};
-       \node (C) at (-1.0,.1) {\tiny \cite{liu2011sxsw}};
-       \node (C) at (-1,-.4) {\includegraphics[scale=.022]{meeting_icon}};
-       \node (C) at (-1,-.7) {\tiny \cite{gillick2009global}};
-       \node (C) at (1.1,0) {\includegraphics[scale=.017]{news_icon}};
-       \node (C) at (1.1,-.3) {\tiny \cite{lin2011class}};
+      \visible<3>{
+       \node[text=red,opacity=.7] at (-.2,-1.6) {\textbf{Optimization}};
+       \draw[opacity=.2,draw=red,opacity=.7] (-.2,0.2) circle (2.3cm);
+       \node at (-1.2,.4) {\includegraphics[scale=.022]{tweet_icon}};
+       \node[text=red,opacity=.7] at (-1.2,.1) {\scriptsize\cite{liu2011sxsw}};
+       \node at (-1.2,-.4) {\includegraphics[scale=.025]{meeting_icon}};
+       \node[text=red,opacity=.7] at (-1.2,-.7) 
+            {\scriptsize\cite{gillick2009global}};
+       \node at (.8,0) {\includegraphics[scale=.022]{news_icon}};
+       \node[text=red,opacity=.7] at (.8,-.3) {\scriptsize\cite{lin2011class}};
       }
-      \visible<3->{
-       \node[text=red,opacity=.7] (C) at (0,-2) {Optimization};
-       \draw[opacity=.2,draw=red,opacity=.7] (0,0) circle (2.5cm);
-       \node (C) at (-1.0,.4) {\includegraphics[scale=.022]{tweet_icon}};
-       \node[text=red,opacity=.7] at (-1.0,.1) {\tiny \cite{liu2011sxsw}};
-       \node at (-1,-.4) {\includegraphics[scale=.025]{meeting_icon}};
-       \node[text=red,opacity=.7] at (-1,-.7) {\tiny \cite{gillick2009global}};
-       \node at (1.1,0) {\includegraphics[scale=.022]{news_icon}};
-       \node[text=red,opacity=.7] at (1.1,-.3) {\tiny \cite{lin2011class}};
-      }
+
+
    \end{tikzpicture}
  \end{figure}
 \end{frame}
@@ -1155,12 +1155,12 @@ Sentence Classification Methods:
 \begin{frame}{Extraction by Optimization} 
 
 Find a subset of input sentences that maximizes the ``coverage'' of the input
-subject to some contraints (typically length).
+subject to constraints (typically length).
 
 ~\\
 
 In this paradigm, coverage must be defined in a way that is positively 
-correlated with the evaluation metric. 
+correlated with the evaluation metric and solvable. 
 
 \end{frame}
 
@@ -1170,20 +1170,19 @@ correlated with the evaluation metric.
 
   \begin{itemize}
     \uncover<1->{
-    \item \textbf{QR Decomposition} \\
-        {\small forms a basis of the sentence-term matrix }
-       {\tiny \cite{conroy2005classy}}
+    \item \textbf{QR Decomposition} 
+       {\scriptsize \citep{conroy2005classy}} \\
+        {\small forms a basis of the sentence-term matrix. }
     }
     \uncover<2->{
-    \item \textbf{Integer Linear Program}\\
-        {\small maximizes sum of frequency weighted ngrams}
-      {\tiny \cite{gillick2009global,liu2011sxsw}}
+    \item \textbf{Integer Linear Program} 
+        {\scriptsize \citep{gillick2009global,liu2011sxsw}} \\
+        {\small maximizes sum of frequency weighted ngrams.}
     }
     \uncover<3->{
-    \item \textbf{Submodular Optimization} \\
-    {\small maximize coverage objective (same as ILP) and promotes diversity}
-      {\tiny \cite{lin2011class}}\\
-    }
+    \item \textbf{Submodular Optimization} {\scriptsize \citep{lin2011class}}\\
+    {\small maximizes coverage objective (same as ILP) and promotes diversity.}
+          }
 
 
     \begin{tabular}{c c c}
@@ -1206,45 +1205,59 @@ correlated with the evaluation metric.
 
 \begin{frame}{Extraction by Optimization}
     \begin{itemize}
- \item \only<1>{ILP formulations very flexible with constraint handling}
-   \only<2->{\textcolor{green}{ILP formulations very flexible with constraint 
-       handling}}
-   \item \only<-2>{ILP possibly less scalable than QR decomposition or 
-       submodular optimization}
-       \only<3->{\textcolor{red}{ILP possibly less scalable than QR 
-           decomposition or submodular optimization}}
-   \item \only<-3>{All are components of 
+   \only<1>{\item All are components of 
             state-of-the-art extractive newswire summarization systems
-        (cite)}
-       \only<4->{\textcolor{green}{All are components of 
+        \citep{hong2014repository}.}
+   \only<2->{\proit{All are components of 
             state-of-the-art extractive newswire summarization systems
-            (cite)}}
-   \item \only<-4>{\cite{gillick2009global} ILP matched oracle level ROUGE 
-                scores;
-        for some domains, extractive summarization may be at the 
-        upper limit of ROUGE scores}
-       \only<5->{\textcolor{green}{\cite{gillick2009global} ILP matched oracle
-               level ROUGE  scores;}
-        for some domains, extractive summarization may be at the 
-        upper limit of ROUGE scores}
-    \uncover<6>{
-\item Perhaps we have reached the limit of extractive summarization?}
+            \citep{hong2014repository}.}}
+
+   \only<-2>{\item ILP formulations very flexible with constraint handling.}
+   \only<3->{\proit{ILP formulations very flexible with constraint 
+       handling.}}
+   \only<-3>{\item ILP possibly less scalable than QR decomposition or 
+       submodular optimization.}
+   \only<4->{\conit{ILP possibly less scalable than QR 
+           decomposition or submodular optimization.}}
+   \only<-4>{\item \citep{gillick2009global} ILP matched oracle level ROUGE 
+                scores;\\
+        optimization based extractive summarization may be at the 
+        upper limit of ROUGE scores.}
+   \only<5->{\proit{\citep{gillick2009global} ILP matched oracle
+               level ROUGE  scores;\\
+        optimization based extractive summarizers may be at the 
+        upper limit of ROUGE scores.}}
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Extractive Summarization}
+
+ \begin{itemize}
+  \item Extractive summarization has focused mostly on maximizing content
+    selection scores (ROUGE and Pyramid).
+~\\
+~\\
+  \item Global optimization of coverage correlates with shallow coverage 
+        metrics.
+~\\
+~\\
+  \item Perhaps we have reached the limit of extractive summarization? 
+ \end{itemize}
+
+\end{frame}
 
 \section{Abstraction}
 
 
-\begin{frame}{Abstraction Paradigms}
-    \begin{itemize}
-        \item \textbf{Sentence Fusion} combine several similar sentences into
-            one sentence
-        \item \textbf{Compression} selectively remove words/phrases that 
-            are less important 
-    \end{itemize}
-\end{frame}
-
+%%\begin{frame}{Abstraction Paradigms}
+%%    \begin{itemize}
+%%        \item \textbf{Sentence Fusion} combine several similar sentences into
+%%            one sentence
+%%        \item \textbf{Compression} selectively remove words/phrases that 
+%%            are less important 
+%%    \end{itemize}
+%%\end{frame}
+%
 \begin{frame}[t]{
     \only<1-3>{Abstractive Summarization}\only<4->{Fusion}}
   \begin{figure}[h]
@@ -1260,14 +1273,14 @@ correlated with the evaluation metric.
 
         \visible<2-3>{\node at (0,-5.2) {\Large \textbf{Fusion}};}
         \visible<4->{\node at (0,-5.2) 
-            {\Large\textcolor{green}{\textbf{Fusion}}};}
+            {\Large\textcolor{proc}{\textbf{Fusion}}};}
         \visible<4->{
         \node at (0,0) {\includegraphics[scale=.12]{fusion_icon}};
         \node at (0,-.5) 
-            {\tiny \textcolor{green}{\cite{barzilay2005sentence}}};
+            {\tiny \textcolor{proc}{\cite{barzilay2005sentence}}};
         \node at (0,-1.1) {\includegraphics[scale=.12]{fusion_icon}};
         \node at (0,-1.6) 
-            {\tiny \textcolor{green}{\cite{filippova2008sentence}}};
+            {\tiny \textcolor{proc}{\cite{filippova2008sentence}}};
         }
 
         \node at (3.25,1.5) {\includegraphics[scale=.07]{compression_icon}};
@@ -1308,7 +1321,7 @@ correlated with the evaluation metric.
             \draw[thick,dotted] (1.74,2) rectangle (7.5,-5.5);}
         \visible<4->{
             \draw[thick,dotted] (1.74,2) rectangle (7.5,-5.5);
-            \draw[thick,dotted,draw=green] (-1.5,2) rectangle (1.5,-5.5);
+            \draw[thick,dotted,draw=proc] (-1.5,2) rectangle (1.5,-5.5);
         }
 
     \end{tikzpicture}
@@ -1325,37 +1338,49 @@ correlated with the evaluation metric.
     \end{enumerate}
 \end{frame}
 
-\begin{frame}{Sentence Fusion}
-    \textbf{\cite{barzilay2005sentence}} \\
+\begin{frame}[t]{Sentence Fusion}
+    \large{\textbf{\cite{barzilay2005sentence}}} 
     \begin{itemize}
-        \item Align dependency graphs; form fusion lattice
-        \item linearize with a language model
-        \item \only<1>{output has low content coverage compared to humans}
-\only<2->{\textcolor{red!70}{output has low content coverage compared to humans}}
-    \item \only<-2>{linearization is the source of grammatical errors}
-\only<3->{\textcolor{red!70}{linearization is the source of grammatical errors}}
+        \small
+        \item Align dependency graphs; form fusion lattice.
+        \item Linearize lattice with a language model.
+        \only<1>{\item Output has low content coverage vs. human.}
+        \only<2->{\conit{Output has low content coverage vs. human.}}
+        \only<-2>{\item Linearization is the source of grammatical errors.}
+        \only<3->{\conit{Linearization is the source of grammatical errors.}}
     \end{itemize}
+       
+ \only<-3>{
+  \begin{figure}[h]
+   \centering
+   \includegraphics[scale=.25,angle=90]{fusion-lattice} 
+  \end{figure}
+~\\
+ }
+ \only<4->{
+  {\large\textbf{\cite{filippova2008sentence}}} \\
+  \begin{itemize}
+   \small
+   \item Compress aligned dependency graph using ILP formulation.
+   \item Deletion conditioned on informativeness and attachment
+        scores.
+   \only<-4>{\item Better readability scores than 
+        {\small\citep{barzilay2005sentence}}.}
+   \only<5->{\proit{Better readability scores than 
+       {\small\citep{barzilay2005sentence}}}.}
+  \end{itemize}
 
-    \textbf{\cite{filippova2008sentence}} \\
-    \begin{itemize}
-        \item compress aligned dependency graph using ILP formulation
-    \item deletion conditioned on informativeness and attachment
-        scores
-    \item \only<-3>{better readability scores than 
-        {\small\cite{barzilay2005sentence}}}
- \only<4->{\textcolor{green!70}{better readability scores than 
- {\small\cite{barzilay2005sentence}}}}
-    \end{itemize}
-
-    \only<-4>{Both system evaluated on small datasets.}
-    \only<5->{\textcolor{red!70}{Both system evaluated on small datasets.}}
-    \\
-    \only<-5>{Hard to say how comparable to competitive extractive system.}
-    \only<6->{\textcolor{red!70}{Hard to say how comparable to competitive extractive system.}}
-
+  \begin{itemize}
+   \small
+   \only<-5>{\item[]  Both system evaluated on small/non-standard datasets.}
+   \only<6->{\conit{Both system evaluated on small/non-standard datasets.}}
+   \only<-6>{\item[] Hard to say how comparable to competitive extractive 
+    system.}
+   \only<7->{\conit{Hard to say how comparable to competitive extractive 
+    system.}}
+  \end{itemize}
+ }
 \end{frame}
-
-
 
 \begin{frame}[t]{
     \only<1>{Fusion}\only<2>{Abstractive Summarization}\only<3>{Compression and Extraction}}
@@ -1366,13 +1391,13 @@ correlated with the evaluation metric.
         \visible<1>{
         \node at (0,0) {\includegraphics[scale=.12]{fusion_icon}};
         \node at (0,-.5) 
-            {\tiny \textcolor{green}{\cite{barzilay2005sentence}}};
+            {\tiny \textcolor{proc}{\cite{barzilay2005sentence}}};
         \node at (0,-1.1) {\includegraphics[scale=.12]{fusion_icon}};
         \node at (0,-1.6) 
-            {\tiny \textcolor{green}{\cite{filippova2008sentence}}};
+            {\tiny \textcolor{proc}{\cite{filippova2008sentence}}};
 
-        \node at (0,-5.2) {\Large \textcolor{green}{\textbf{Fusion}}};
-        \draw[thick,dotted,draw=green] (-1.5,2) rectangle (1.5,-5.5);
+        \node at (0,-5.2) {\Large \textcolor{proc}{\textbf{Fusion}}};
+        \draw[thick,dotted,draw=proc] (-1.5,2) rectangle (1.5,-5.5);
         }
 
         \visible<2->{
@@ -1408,21 +1433,21 @@ correlated with the evaluation metric.
         \visible<3>{
         \node at (3.25,1.5) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,1.6) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,1) {\tiny \textcolor{green}{\cite{zajic2006sentence}}};
+        \node at (3.25,1) {\tiny \textcolor{proc}{\cite{zajic2006sentence}}};
         \node at (3.25,0) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,.1) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-.5) {\tiny \textcolor{green}{\cite{martins2009summarization}}};
+        \node at (3.25,-.5) {\tiny \textcolor{proc}{\cite{martins2009summarization}}};
         \node at (3.25,-1.1) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,-1) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-1.6) {\tiny \textcolor{green}{\cite{berg2011jointly}}};
+        \node at (3.25,-1.6) {\tiny \textcolor{proc}{\cite{berg2011jointly}}};
         \node at (3.25,-2.6) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,-2.5) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-3.1) {\tiny \textcolor{green}{\cite{wang2013sentence}}};
+        \node at (3.25,-3.1) {\tiny \textcolor{proc}{\cite{wang2013sentence}}};
         
-        \node at (3.25,-4.5) {\textcolor{green}{\textbf{Extraction}}};
-        \draw[thick,dotted,draw=green] (4.8,-4) edge (4.8,2); 
-        \draw[thick,dotted,draw=green] (1.74,2) rectangle (7.5,-5.5);
-        \node at (4.75,-5.2 ) {\Large \textcolor{green}{\textbf{+Compression}}};
+        \node at (3.25,-4.5) {\textcolor{proc}{\textbf{Extraction}}};
+        \draw[thick,dotted,draw=proc] (4.8,-4) edge (4.8,2); 
+        \draw[thick,dotted,draw=proc] (1.74,2) rectangle (7.5,-5.5);
+        \node at (4.75,-5.2 ) {\Large \textcolor{proc}{\textbf{+Compression}}};
         }
 
         \node at (6.25,1) {\includegraphics[scale=.07]{compression_icon}};
@@ -1446,73 +1471,70 @@ correlated with the evaluation metric.
 \end{frame}
 
 
-\begin{frame}{Compression with Extraction} 
-
-  \only<1>{
-    Extract sentences while selectively deleting less important words/phrases
-    from the input.
-  }
-    
-  \only<2>{
-    \textbf{Extract} sentences while selectively deleting less important 
-    words/phrases from the input.
-  }
-
-  \only<3>{
-    \textbf{Extract} sentences while selectively \textbf{deleting} less 
-    important words/phrases from the input.
-  }
-
-\end{frame}
+%\begin{frame}{Compression with Extraction} 
+%
+%  \only<1>{
+%    Extract sentences while selectively deleting less important words/phrases
+%    from the input.
+%  }
+%    
+%  \only<2>{
+%    \textbf{Extract} sentences while selectively deleting less important 
+%    words/phrases from the input.
+%  }
+%
+%  \only<3>{
+%    \textbf{Extract} sentences while selectively \textbf{deleting} less 
+%    important words/phrases from the input.
+%  }
+%
+%\end{frame}
 
 \begin{frame}{Compression with Extraction: Heuristic Pruning} 
-%    \begin{enumerate}
-%        \item Generate many compressed sentences.
-%        \item Rank/Order sentences.
-%    \end{enumerate}
-    \textbf{\cite{zajic2006sentence} }
-\begin{enumerate}
-    \item over generate sentence compressions
-    \item perform extractive ranking based summarization
-\end{enumerate}
-        \uncover<2->{
+  \textbf{\cite{zajic2006sentence} }
+  \begin{enumerate}
+    \small
+    \item Over generate sentence compressions \\
+        \spit (linguistically informed heuristics).
+    \item Perform extractive ranking based summarization.
+  \end{enumerate}
+  \uncover<2->{
     \begin{itemize}
-        \item \only<-2>{Manually tuned ranking weights}
-            \only<3->{\textcolor{red!70}{Manually tuned ranking weights}}
-        \item \only<-3>{moderate to poor ROUGE results}
-            \only<4->{\textcolor{red!70}{moderate to poor ROUGE results}}
-        \item \only<-4>{poor linguistic quality judgements}
-            \only<5->{\textcolor{red!70}{poor linguistic quality judgements}}
+        \small
+        \only<-2>{\item Manually tuned ranking weights.}
+        \only<3->{\conit{Manually tuned ranking weights.}}
+        \only<-3>{\item Moderate to poor ROUGE results.}
+        \only<4->{\conit{Moderate to poor ROUGE results.}}
+        \only<-4>{\item Poor linguistic quality judgements.}
+        \only<5->{\conit{Poor linguistic quality judgements.}}
     \end{itemize}
-}
+  }
 \end{frame}
 
 
 \begin{frame}{Compression with Extraction: ILP}
-    \textbf{\cite{martins2009summarization} }
+  \textbf{\cite{martins2009summarization} }
     \begin{itemize}
-    \item  extraction and compression task is encoded as an ILP
-    %\item flexible model for encoding various constraints
-    \item extraction parameters trained separately from compression parameters
-    \item \only<1>{small gains ROUGE-2 scores against extractive baselines}
-        \only<2->{\textcolor{red!70}{small gains ROUGE-2 scores against extractive baselines}}
+      \item Extraction and compression task is encoded as an ILP.
+      \item Extraction \& compression parameters trained separately.
+      \only<1>{\item ROUGE-2 scores equivalent to extractive baselines.}
+      \only<2->{\conit{ROUGE-2 scores equivalent to extractive baselines.}}
     \end{itemize}
 
     \textbf{\cite{berg2011jointly} }
     \begin{itemize}
-        \item \only<-2>{learn compression and
-            extraction simultaneously (also ILP) }
-  \only<3->{\textcolor{green!70}{learn compression and
-  extraction simultaneously (also ILP) }}
-    %\item created bigram recall maximizing overlength extracts
-    \item used mechanical turk to collect compressions of overlength extracts
-    \item \only<-3>{(in practice) uses approximation of joint objective: }
-    \only<4>{\textcolor{red!70}{(in practice) uses approximation of joint objective: }}
-        \begin{itemize}
-            \item run overlength extractive solver
-            \item run compressive solver over fixed extractions
-        \end{itemize}
-    \end{itemize}
+      \only<-2>{\item learn compression and extraction simultaneously (also 
+        ILP).}
+      \only<3->{\proit{learn compression and extraction simultaneously (also 
+        ILP).}}
+      \item Used Mechanical Turk to collect labeled data for joint task.
+      \only<-3>{\item In practice, uses approximation of joint objective: }
+      \only<4>{\conit{In practice, uses approximation of joint objective: }}
+        \begin{enumerate}
+            \item Run overlength extractive solver.
+            \item Run compressive solver over fixed extractions.
+        \end{enumerate}
+      \end{itemize}
 \end{frame}
 
 
@@ -1520,24 +1542,30 @@ correlated with the evaluation metric.
 \begin{frame}{Compression in with Extraction: Beam Search} 
     \textbf{\cite{wang2013sentence}}
     \begin{enumerate}
+        \small
         \item Rank \& Order sentences.
         \item Compress sentences.
-        \item Add sentences to summary until length limit reached
+        \item Add sentences to summary until length limit reached.
     \end{enumerate}
     \uncover<2->{
-    \begin{itemize}
-        \item ranking and compression trained separately 
-        \item \only<-2>{ranking performed on uncompressed sentences}
-            \only<3->{\textcolor{red!70}{ranking performed on uncompressed sentences}}
-        \item beam search is used to find approximate best compressions
-    \item \only<-3>{beats extractive systems on query focused summarization}
-        \only<4->{\textcolor{green!70}{beats extractive systems on query focused summarization}}
+      \begin{itemize}
+        \small
+        \item Ranking and compression trained separately .
+        \only<-2>{\item Ranking performed on uncompressed sentences.}
+        \only<3->{\conit{Ranking performed on uncompressed sentences.}}
+        \item Linguistically motivated beam search is used to find 
+            approximate best compressions.
+        \only<-3>{\item Beats extractive systems on query focused 
+            summarization in ROUGE-2/Pyramid.}
+        \only<4->{\proit{Beats extractive systems on query focused 
+            summarization in ROUGE-2/Pyramid.}}
+        \only<-4>{\item Comparable to extractive systems w.r.t. linguistic 
+            quality.}
+        \only<5->{\proit{Comparable to extractive systems w.r.t. linguistic
+            quality.}}
     \end{itemize}
 }
 \end{frame}
-
-
-
 
 \begin{frame}{
     \only<1>{Compression and Extraction}\only<2>{Abstractive Summarization}\only<3>{Compression and Generation}}
@@ -1556,21 +1584,21 @@ correlated with the evaluation metric.
         \visible<1>{
         \node at (3.25,1.5) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,1.6) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,1) {\tiny \textcolor{green}{\cite{zajic2006sentence}}};
+        \node at (3.25,1) {\tiny \textcolor{proc}{\cite{zajic2006sentence}}};
         \node at (3.25,0) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,.1) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-.5) {\tiny \textcolor{green}{\cite{martins2009summarization}}};
+        \node at (3.25,-.5) {\tiny \textcolor{proc}{\cite{martins2009summarization}}};
         \node at (3.25,-1.1) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,-1) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-1.6) {\tiny \textcolor{green}{\cite{berg2011jointly}}};
+        \node at (3.25,-1.6) {\tiny \textcolor{proc}{\cite{berg2011jointly}}};
         \node at (3.25,-2.6) {\includegraphics[scale=.09]{compression_icon}};
         \node at (2.95,-2.5) {\includegraphics[scale=.11]{extract_icon}};
-        \node at (3.25,-3.1) {\tiny \textcolor{green}{\cite{wang2013sentence}}};
+        \node at (3.25,-3.1) {\tiny \textcolor{proc}{\cite{wang2013sentence}}};
         
-        \node at (3.25,-4.5) {\textcolor{green}{\textbf{Extraction}}};
-        \draw[thick,dotted,draw=green] (4.8,-4) edge (4.8,2); 
-        \draw[thick,dotted,draw=green] (1.74,2) rectangle (7.5,-5.5);
-        \node at (4.75,-5.2 ) {\Large \textcolor{green}{\textbf{+Compression}}};
+        \node at (3.25,-4.5) {\textcolor{proc}{\textbf{Extraction}}};
+        \draw[thick,dotted,draw=proc] (4.8,-4) edge (4.8,2); 
+        \draw[thick,dotted,draw=proc] (1.74,2) rectangle (7.5,-5.5);
+        \node at (4.75,-5.2 ) {\Large \textcolor{proc}{\textbf{+Compression}}};
         }
 
         \visible<2->{
@@ -1616,21 +1644,21 @@ correlated with the evaluation metric.
         \visible<3>{
         \node at (6.25,1) {\includegraphics[scale=.07]{compression_icon}};
         \node at (5.95,1.2) {\includegraphics[scale=.06]{align_icon}};
-        \node at (6.25,.5) {\tiny \textcolor{green}{\cite{woodsend2010generation}}};
+        \node at (6.25,.5) {\tiny \textcolor{proc}{\cite{woodsend2010generation}}};
         \node at (6.25,-.1) {\includegraphics[scale=.07]{compression_icon}};
         \node at (5.95,.1) {\includegraphics[scale=.06]{align_icon}};
-        \node at (6.25,-.6) {\tiny \textcolor{green}{\cite{rush2015neural}}};
+        \node at (6.25,-.6) {\tiny \textcolor{proc}{\cite{rush2015neural}}};
 
         \node at (5.75,-1.9) {\includegraphics[scale=.11]{amr_icon}};
         \node at (6.25,-2.0) {\includegraphics[scale=.07]{compression_icon}};
-        \node at (6.25,-2.5) {\tiny \textcolor{green}{\cite{pighin2014modelling}}};
+        \node at (6.25,-2.5) {\tiny \textcolor{proc}{\cite{pighin2014modelling}}};
         \node at (5.75,-3) {\includegraphics[scale=.11]{amr_icon}};
         \node at (6.25,-3.1) {\includegraphics[scale=.07]{compression_icon}};
-        \node at (6.25,-3.6) {\tiny \textcolor{green}{\cite{liu2015toward}}};
-        \node at (6.25,-4.5) {\textcolor{green}{\textbf{Generation}}};
-        \node at (4.75,-5.2 ) {\Large \textcolor{green}{\textbf{+Compression}}};
-        \draw[thick,dotted,draw=green] (4.8,-4) edge (4.8,2); 
-        \draw[thick,dotted,draw=green] (1.74,2) rectangle (7.5,-5.5);
+        \node at (6.25,-3.6) {\tiny \textcolor{proc}{\cite{liu2015toward}}};
+        \node at (6.25,-4.5) {\textcolor{proc}{\textbf{Generation}}};
+        \node at (4.75,-5.2 ) {\Large \textcolor{proc}{\textbf{+Compression}}};
+        \draw[thick,dotted,draw=proc] (4.8,-4) edge (4.8,2); 
+        \draw[thick,dotted,draw=proc] (1.74,2) rectangle (7.5,-5.5);
         }
 
 
@@ -1638,88 +1666,89 @@ correlated with the evaluation metric.
   \end{figure}
 \end{frame}
 
-
-
-
-
-
-
-
-
 \begin{frame}{Compressive Generation}
 
     \only<1>{\textbf{Alignments}}
-    \only<2->{\textcolor{green!70}{\textbf{Alignments}}}
+    \only<2->{\textcolor{proc}{\textbf{Alignments}}}
     \begin{itemize}
-\item \textbf{Quasi-Synchronous Grammar} 
-    {\tiny \cite{woodsend2010generation}}
-\item \textbf{Attentional Neural MT}
-    {\tiny \cite{rush2015neural}}
+      \item \textbf{Quasi-Synchronous Grammar} 
+       {\scriptsize \citep{woodsend2010generation}}
+      \item \textbf{Attentional Neural MT}
+       {\scriptsize \citep{rush2015neural}}
     \end{itemize}
 
-
-\textbf{Semantics}
+    \textbf{Semantics}
     \begin{itemize}
-\item \textbf{Open Information Extraction} 
-    {\tiny \cite{pighin2014modelling}}
-\item \textbf{Abstract Meaning Representation} 
-    {\tiny \cite{liu2015toward}}
+      \item \textbf{Open Information Extraction} 
+       {\scriptsize \citep{pighin2014modelling}}
+      \item \textbf{Abstract Meaning Representation} 
+       {\scriptsize \citep{liu2015toward}}
     \end{itemize}
-
 \end{frame}
     
     
 \begin{frame}{Compressive Alignments}
 
-    \textbf{\cite{woodsend2010generation}} -- generation as parsing
-    \begin{itemize}
-            \small
-    \item Find compressive derivation of input under quasi-synchronous 
-        grammar 
-    \item Similar to ILP's for compression/extraction, but 
-        \only<1>{more expressive}\only<2->{\textcolor{green!70}{more expressive}}:
-       \begin{itemize}
-           \item deletion (compression)
-           \item rewriting (paraphrase)
-           \item reordering 
-       \end{itemize}
-   \item \only<-2>{high grammaticality and importance scores}
-       \only<3->{\textcolor{green!70}{high grammaticality and importance scores}}\\
-       (on par with human reference)
-    \end{itemize}
+ \large{\textbf{\cite{woodsend2010generation}}} -- Generation as parsing.
+ \begin{itemize}
+   \small
+   \item Find compressive derivation of input under quasi-synchronous 
+        grammar. 
+   \item Similar to ILP's for compression/extraction, but 
+   \only<1>{more expressive}\only<2->{\textcolor{proc}{more expressive}}:
+   \begin{itemize}
+     \item deletion (compression)
+     \item rewriting (paraphrase)
+     \item reordering 
+   \end{itemize}
+   \only<-2>{\item High grammaticality and importance scores\\
+       \spit (on par with human reference).
+   }
+   \only<3->{\proit{High grammaticality and importance scores \\
+       \spit (on par with human reference).
+    }}
+ \end{itemize}
 
-    \textbf{\cite{rush2015neural}} -- generation as MT
-    \begin{itemize}
-            \small
-        \item finds soft alignments between input and compressive generation
-        \item \only<-3>{both neural attention 
-            model and MOSES are very competitive}
-   \only<4->{\textcolor{green!70}{both neural attention 
-   model and MOSES are very competitive}}
-        \item \only<-4>{discrete features needed to surpass MOSES}
-    \only<5->{\textcolor{red!70}{discrete features needed to surpass MOSES}}
-    \end{itemize}
+ \only<-3>{
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=.22]{backup/images/figure2-woodsend10}
+    \end{figure}
+ }
+
+ \only<4->{
+ \large{\textbf{\cite{rush2015neural}}} -- Generation as machine translation.
+ \begin{itemize}
+   \small
+   \item Finds soft alignments between input and compressive generation.
+   \only<-4>{\item Both neural attention 
+            model and MOSES are state-of-the-art w.r.t. ROUGE-2.}
+   \only<5->{\proit{Both neural attention 
+   model and MOSES are state-of-the-art w.r.t. ROUGE-2.}}
+   \only<-5>{\item Discrete features needed to surpass MOSES.}
+   \only<6->{\proit{Discrete features needed to surpass MOSES.}}
+ \end{itemize}
+ }
 \end{frame}
 
 \begin{frame}{Compressive Generation}
 
-    \only<1>{\textcolor{green!70}{\textbf{Alignments}}}
+    \only<1>{\textcolor{proc}{\textbf{Alignments}}}
     \only<2->{\textbf{Alignments}}
     \begin{itemize}
-\item \textbf{Quasi-Synchronous Grammar} 
-    {\tiny \cite{woodsend2010generation}}
-\item \textbf{Attentional Neural MT}
-    {\tiny \cite{rush2015neural}}
+      \item \textbf{Quasi-Synchronous Grammar} 
+       {\scriptsize \citep{woodsend2010generation}}
+      \item \textbf{Attentional Neural MT}
+       {\scriptsize \citep{rush2015neural}}
     \end{itemize}
 
-
     \only<-2>{\textbf{Semantics}}
-    \only<3>{\textcolor{green!70}{\textbf{Semantics}}}
+    \only<3>{\textcolor{proc}{\textbf{Semantics}}}
     \begin{itemize}
-\item \textbf{Open Information Extraction} 
-    {\tiny \cite{pighin2014modelling}}
-\item \textbf{Abstract Meaning Representation} 
-    {\tiny \cite{liu2015toward}}
+      \item \textbf{Open Information Extraction} 
+       {\scriptsize \citep{pighin2014modelling}}
+      \item \textbf{Abstract Meaning Representation} 
+       {\scriptsize \citep{liu2015toward}}
     \end{itemize}
 
 \end{frame}
@@ -1727,855 +1756,858 @@ correlated with the evaluation metric.
 
 \begin{frame}{Summarization with Semantics}
 
-    \textbf{\cite{pighin2014modelling}} 
-        \begin{itemize}
-                \small
-            \item mine template patterns for sentence 
-        summarization
-            \item memory-based look up data structure for 
-                probabilisticly mapping a 
-                sentence to IE-pattern sub-graphs it contains
-            \item only compare against their own template based methods;\\
-    \only<1>{unclear how these compare other approaches or human reference}
-\only<2->{\textcolor{red!70}{unclear how these compare other approaches or human reference}}
-        \end{itemize}
+ \large{\textbf{\cite{pighin2014modelling}}}
+ \begin{itemize}
+  \small
+  \item Mine template patterns for sentence summarization.
+  \item Memory-based look up for probabilisticly mapping a 
+        sentence to template.
+  \item Only compare against their own template \& compression based methods.\\
+  \only<1>{Unclear how these compare other approaches or human reference.}
+  \only<2->{\conit{Unclear how these compare other approaches or human 
+        reference.}}
+ \end{itemize}
 
-        \textbf{\cite{liu2015toward}} 
-        \begin{enumerate}
-                \small
-            \item Merge AMR graphs ofinputs into a single graph object; 
-            \item find graph compression that represents summary (ILP)
-            \item generate text from summary AMR (in theory)
-        \end{enumerate}
-    \begin{itemize}
-            \small
-        \item \only<-2>{generation from resultant graph is an open problem}
-            \only<3->{\textcolor{red!70}{generation from resultant graph is an open problem}}
-\item \only<-3>{simple unigram generation model used as proof of concept; \\
-    (much ceiling between achieved results and oracle) }
-    \only<4->{\textcolor{red!70}{simple unigram generation model used as proof of concept;} \\
-    \textcolor{red!70}{(much ceiling between achieved results and oracle)} }
-    \end{itemize}
+ \large{\textbf{\cite{liu2015toward}}}
+ \begin{enumerate}
+  \small
+  \item Merge AMR graphs of inputs into a single graph object.
+  \item Compress merged graph into valid AMR (using ILP solver).
+  \item Generate text from summary AMR (in theory).
+ \end{enumerate}
+ \begin{itemize}
+  \small
+  \only<-2>{\item Generation from resultant AMR graph is an open problem.}
+  \only<3->{\conit{Generation from resultant AMR graph is an open problem.}}
+  \only<-3>{\item Simple unigram generation model used as proof of concept\\
+    (large gap between their results and oracle ROUGE-1). }
+  \only<4->{\conit{Simple unigram generation model used as proof of concept\\
+    (large gap between their results and oracle ROUGE-1).} }
+ \end{itemize}
 \end{frame}
 
 \begin{frame}{Abstractive Summarization}
 
-   
-
-    \begin{itemize}
-
-        \item \only<1>{Diverse set of approaches for abstractive generation}
-\only<2->{\textcolor{green!70}{Diverse set of approaches for abstractive generation}}
+  \begin{itemize}
+   \only<1>{\item Diverse set of approaches for abstractive generation.}
+   \only<2->{\proit{Diverse set of approaches for abstractive generation.}}
 ~\\
 ~\\
-        \item \only<-2>{lack of uniform test set makes comparisons difficult}
-            \only<3->{\textcolor{red!70}{lack of uniform test set makes comparisons difficult}}
-            \begin{itemize}
-                \item What is the ceiling for coverage?
-                \item What is the ceiling for linguistic quality?
-            \end{itemize}
-    \end{itemize}
+   \only<-2>{\item Lack of uniform test set makes comparisons difficult:}
+   \only<3->{\conit{Lack of uniform test set makes comparisons difficult:}}
+   \begin{itemize}
+     \item What is the upper bound for content selection?
+     \item What is the upper bound for linguistic quality?
+   \end{itemize}
+~\\
+   \only<-3>{\item Lack of automatic linguistic quality evaluation leaves 
+    abstractive methods overly focused on ``safe'' deletion rather than 
+    writing the best summaries.}
+   \only<4>{\conit{Lack of automatic linguistic quality evaluation leaves 
+    abstractive methods overly focused on ``safe'' deletion rather than 
+    writing the best summaries.}}
+ \end{itemize}
 
 \end{frame}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%
-
-%\end{frame}
-%\begin{frame}{Extraction by Coverage Optimization}
 %
-%    \begin{figure}[!h]
-%        \centering
-% \begin{tikzpicture}
-%     \node (C) at (1.5,5) {Classification};
-%     \node[rotate=45] (C) at (4.5,-1.7) {Ranking};
-%     \node[rotate=-45,text=red,opacity=.7] (C) at (-1.5,-1.7) {Coverage Opt.};
-%     \node (C) at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
-%     \node (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
-%     %\node (C) at (1.5,-1) {\includegraphics[scale=.017]{news_icon}};
-%     \node (C) at (0.3,-1.8) {\includegraphics[scale=.022]{news_icon}};
-%     \node[text=red,opacity=.7] (C) at (0.3,-2.1) {\tiny \cite{lin2011class}};
-%     \node (C) at (-1.8,.3) {\includegraphics[scale=.022]{tweet_icon}};
-%     \node[text=red,opacity=.7] (C) at (-1.8,0) {\tiny \cite{liu2011sxsw}};
-%     \node (C) at (-.8,-.6) {\includegraphics[scale=.025]{meeting_icon}};
-%     \node[text=red,opacity=.7] (C) at (-.8,-.9) {\tiny \cite{gillick2009global}};
-%     \node (C) at (-.4,2.2) {\includegraphics[scale=.022]{news_icon}};
-%     \node[text=red,opacity=.7] (C) at (-.4,1.9) {\tiny \cite{conroy2005classy}};
-%     \node (C) at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
-%     \node (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
-%     \node (C) at (4,.4) {\includegraphics[scale=.017]{news_icon}};
-%     \node (C) at (4,.1) {\tiny \cite{lin2000automated}};
-%     \node (C) at (4,-.2) {\tiny \cite{erkan2004lexrank}};
-%     \node (C) at (4,-.5) {\tiny \cite{guo2013updating}};
-%     \node (C) at (4,-.8) {\tiny \cite{mccreadie2014incremental}};
-%    \draw[opacity=.2,color=red] (0,0) circle (2.5cm);
-%    \draw[opacity=.2] (3,0) circle (2.5cm);
-%    \draw[opacity=.2] (1.5,3) circle (2.5cm);
-% \end{tikzpicture}
-% \end{figure}
-%\end{frame}
 %
 %
 %
-
 %
 %
-%\begin{frame}{Coverage Optimization}
-%    \begin{itemize}
-%\item \textbf{Integer Linear Program} 
 %
-%    \begin{align}
-%        \max \sum_i w_i c_i&\\
-%    \mathrm{s.t.} &\sum_j l_j u_j < L \\
-%                  & \sum_j u_j o_{ij} \ge c_i \;\;\; \forall i\\
-%        & u_j o_{ij} \le c_i \;\;\; \forall i,j
-%    \end{align}
-%    where $c_i,u_j, o_{ij}\in \{0,1\}$, $l_j, L \in \mathcal{N}$, $w_i \in \mathcal{R}$\\
-%    $c_i$ are concepts (ngrams), $w_i$ is a concept weight (frequency),\\
-%    $u_j$ indicates whether sentence $j$ is selected for summary,\\
-%    $l_j$ is the length of sentence $j$ and $L$ is the length budget,\\
-%    $o_{ij}$ indicates whether concept $i$ occurs in sentence $j$ \\
 %
-%    \end{itemize}
-%\end{frame}
 %
 %
-%\begin{frame}{Heuristics}
-%\cite{nenkova2005impact} -- isolate the effects of frequency for extraction
-%  
-%\begin{itemize}
-%\item very competetive ROUGE performance
-%\item greedy algorithm for computing summaries 
-% \item performance possibly due to reweighting, 
-%\begin{itemize}
-%\item unreweighted summaries have 
-%    much lower ROUGE
-%\item unreweighted algo. is approx. of document likelihood objective in \cite{louis2009automatically}, which poorly correlates with human judgements
-%\end{itemize}
-%\end{itemize}
 %
-%\end{frame}
 %
-%\begin{frame}{Heuristics}
-%\cite{nenkova2005impact} -- examine weighting pyramid annotations (potentially remove need for model 
-%    summary annotation)
-%\begin{itemize}
-%\item strong but imperfect correlation
-%\item frequency does not fully explain content selection
-%\begin{figure}
-%\centering
-%\begin{tabular}{l| l| l| l}
-%         & Top 5              & Top 8              & Top 12  \\
-%\hline
-%human    & \alert<2>{94.66\%} & \alert<3>{91.25\%} & \alert<4>{85.25\%} \\
-%\hline
-%machine  & 84.00\%            & 77.87\%            & 66.08\% \\
-%\hline
-%SumBasic & \alert<2>{96.00\%} & \alert<3>{95.00\%} & \alert<4>{90.83\%} \\
-%\end{tabular}
 %
-%\end{figure}
-%\item SumBasic consistently \alert<2->{over-estimates} frequency importance vs human
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Heuristics}
-%\cite{lin2000automated} -- automatic method for finding key phrases/terms 
-%    using likelihood ratios
-%\begin{itemize}
-%\item $\mathcal{R} \triangleq$ relevant docs; 
-%    $\tilde{\mathcal{R}} \triangleq$ irrelevant docs;
-%    $t \triangleq $ ngram 
-%\item Hypothesis 1 ($H_1$): $P(\mathcal{R}|t) = P(\tilde{\mathcal{R}}|t)$
-%\item Hypothesis 2 ($H_2$): $P(\mathcal{R}|t) \gg P(\tilde{\mathcal{R}}|t)$
-%\item large $L(H_2) \rightarrow $ large  $ -2\log\frac{L(H_1)}{L(H_2)} $
-%\end{itemize}
-%\end{frame}
-%
-%
-%\begin{frame}{Heuristics}
-%\cite{lin2000automated} -- automatic method for finding key phrases/terms 
-%    using likelihood ratios
-%\begin{itemize}
-%\item ranking sentences by topic signatures outperforms tfidf and lead 
-%    baselines
-%\item limited evaluation (only 4 topics)
-%\item however, \cite{louis2009automatically} find moderate positive 
-%    correlation between topic signature coverage and human responsiveness 
-%    scores
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Random Walks on Sentences}
-%\cite{erkan2004lexrank} -- Extract sentences via graph-based notion of 
-%    centrality
-%\begin{itemize}
-%\item sentences are \textit{nodes} in a \textit{graph}, 
-%\item \textit{edges} are weighted by sentence similarity
-%\item PageRank finds an eigenvector of the adjacency matrix
-%\item eigenvector elements are interpretable as a ranking of sentence centrality
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Random Walks on Sentences}
-%\cite{erkan2004lexrank} -- Extract sentences via graph-based notion of 
-%    centrality
-%\begin{itemize}
-%\item language agnostic
-%\item generally benefits from reranking to handle redundancy
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Query Focused Summarization}
-%\cite{conroy2005classy} -- use query term and topic signature matches as 
-%    features in an hidden Markov model (HMM).
-%\begin{itemize}
-%\item selection with HMM, requires extractive gold summaries
-%\item reranking step performed with pivoted QR decomposition
-%\item Named Entity (NE) tagging not helpful, despite HACKY exploitation of 
-%    ROUGE-1
-%\item High pyramid scores, despite low ROUGE-1 performance
-%\end{itemize}
-%\end{frame}
-%
-%
-%\begin{frame}{Streaming Summarization}
-%\cite{guo2013updating} -- define streaming summarization task, exploratory
-%    system design and evaluation
-%\begin{itemize}
-%\item explore sentence selection from first 10 sentences or headline only
-%\item effects of stationary/non-stationary features
-%\item non-stationary features introduce importance of buffering policy
-%\item feature combination for first 10 sentences best overall
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Streaming Summarization}
-%\cite{mccreadie2014incremental} -- Streaming summarization systems are noisy
-%    during periods of downtime; learn to predict rank cutoff to reduce noise
-%\begin{itemize}
-%\item this task is hard -- very large gap between oracle and current top 
-%    performance
-%\item improved recall measure but precision? Counter-intuitive result? 
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Summarization in other Domains}
-%\cite{maskey2005comparing} -- Broadcast news speech summarization
-%\begin{itemize}
-%\item Prosodic/Acoustic features complement lexical features
-%\item Suggests speech summarization without transcription is possible
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Summarization in other Domains}
-%\cite{titov2008joint} -- Review/Opinion summarization; Correlate LDA-style 
-%    topics with ratings values
-%\begin{itemize}
-%\item model allows for extraction of sentences for different aspects of review
-%\item very competitive with a supervised extractive model 
-%\end{itemize}
-% 
-%\end{frame}
-%
-%
-%\begin{frame}{Summarization in other Domains}
-%\cite{gillick2009global} -- Meeting summarization; use ILP solver to maximize
-%    ngram coverage subject to length and speaker constraints
-%\begin{itemize}
-%\item were able to obtain oracle ROUGE scores
-%\item remaining improvement should be found in improving coherence and other
-%    linguistic qualities 
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Summarization in other Domains}
-%\cite{liu2011sxsw} -- Twitter summarization; use ILP solver to maximize
-%    ngram coverage subject to length and speaker constraints
-%\begin{itemize}
-%\item compare multiple input sources: tweets/normalized tweets or linked web
-% text, or combination 
-%\item only tiny variation in ROUGE depending on input
-%\item Web Text inputs yield higher grammaticality scores
-%\item Tweet inputs yield higher clarity and focus scores
-%\end{itemize}
-%\end{frame}
-%
-%
-
-%
-%
-%
-%
-%\begin{frame}{Abstractive Summarization - Approaches}
-%    \begin{figure}
-%          \small
-%        \rowcolors{2}{gray!5}{white}
-%    \begin{tabular}{l | l | l |}
-%        \hline
-%        &  \multicolumn{2}{c|}{Approach } \\
-%    & Fuse & Compress \\
-%        \hline
-%        \cite{barzilay2005sentence} & X &  \\
-%        \hline
-%        \cite{zajic2006sentence}    & & X \\
-%        \hline
-%        \cite{filippova2008sentence} & X & \\
-%        \hline
-%        \cite{martins2009summarization} & & X \\
-%        \hline
-%        \cite{woodsend2010generation}  &  & X \\
-%        \hline
-%        \cite{berg2011jointly} & & X\\
-%        \hline
-%        \cite{wang2013sentence} & & X \\
-%        \hline
-%        \cite{pighin2014modelling} & &  \\
-%        \hline
-%        \cite{liu2015toward} & X & X \\
-%        \hline
-%        \cite{rush2015neural} & & X \\
-%        \hline
-%    \end{tabular}
-%\end{figure}
-%
-%
-%\end{frame}
-%
-%
-%\begin{frame}{Abstractive Summarization - Approaches}
-%    \begin{figure}
-%          \small
-%        \rowcolors{2}{gray!5}{white}
-%    \begin{tabular}{l | l | l || l | l |}
-%        \hline
-%        &  \multicolumn{2}{c|}{Approach } &  \multicolumn{2}{c|}{Inference}  \\
-%        & Fuse & Compress & ILP & Search\\
-%        \hline
-%        \cite{barzilay2005sentence} & X & &  & X \\
-%        \hline
-%        \cite{zajic2006sentence}    & & X & & X\\
-%        \hline
-%        \cite{filippova2008sentence} & X & & X & X\\
-%        \hline
-%        \cite{martins2009summarization} & & X & X&\\
-%        \hline
-%        \cite{woodsend2010generation}  &  & X  & X&\\
-%        \hline
-%        \cite{berg2011jointly} & & X & X &\\
-%        \hline
-%        \cite{wang2013sentence} & & X & &  X \\
-%        \hline
-%        \cite{pighin2014modelling} & &  & & X \\
-%        \hline
-%        \cite{liu2015toward} & X & X & X & \\
-%        \hline
-%        \cite{rush2015neural} & & X &  & X \\
-%        \hline
-%    \end{tabular}
-%\end{figure}
-%
-%
-%\end{frame}
-%
-%\begin{frame}{Fusion}
-% \begin{tikzpicture}[
-%    dep/.style={shape=circle,draw=black, align=center, scale=.4}]
-%\node[dep] (A) at (0,0) {confirm};
-%\node[dep] (B) at (-1,-1) {IDF \\ spokeswoman};
-%\node[dep] (C) at (0,-1) {this};
-%\node[dep] (D) at (1,-1) {but};
-%\node[dep] (E) at (1,-2) {said};
-%\node[dep] (F) at (1,-3) {fire};
-%\node[dep] (G) at (1,-4) {antitank \\ missile};
-%\node[dep] (H) at (-.5,-4) {Palestinian};
-%\node[dep] (I) at (2,-4) {at};
-%\node[dep] (J) at (2,-5) {bulldozer};
-%\path [->] (A) edge (B); 
-%\path [->] (A) edge (C); 
-%\path [->] (A) edge (D); 
-%\path [->] (D) edge (E); 
-%\path [->] (E) edge (F); 
-%\path [->] (F) edge (G); 
-%\path [->] (F) edge (H); 
-%\path [->] (F) edge (I); 
-%\path [->] (I) edge (J); 
-%
-%
-%\node[dep] (1) at (5,0) {erupt};
-%\node[dep] (2) at (4.5,-1) {clash};
-%\node[dep] (3) at (5.5,-1) {when};
-%\node[dep] (4) at (5.5,-2) {fire};
-%\node[dep] (5) at (4.0,-3.5) {Palestinian \\ militant};
-%\node[dep] (6) at (5.5,-3.5) {machine gun \\ and antitank \\ missile};
-%\node[dep] (7) at (6.5,-3.5) {at};
-%\node[dep] (8) at (6.5,-4.5) {that};
-%\node[dep] (9) at (6.5,-5.5) {build};
-%\node[dep] (10) at (5.5,-6.5) {embarkment};
-%\node[dep] (11) at (6.5,-6.5) {in};
-%\node[dep] (12) at (6.5,-7.5) {area};
-%\node[dep] (13) at (7.5,-6.5) {protect};
-%\node[dep] (14) at (7.5,-7.5) {better};
-%\node[dep] (15) at (8.5,-7.5) {Israeli \\ force};
-%
-%\path [->] (1) edge (2); 
-%\path [->] (1) edge (3); 
-%\path [->] (3) edge (4); 
-%\path [->] (4) edge (5); 
-%\path [->] (4) edge (6); 
-%\path [->] (4) edge (7); 
-%\path [->] (7) edge (8); 
-%\path [->] (8) edge (9); 
-%\path [->] (9) edge (10); 
-%\path [->] (9) edge (11); 
-%\path [->] (9) edge (13); 
-%\path [->] (11) edge (12); 
-%\path [->] (13) edge (14); 
-%\path [->] (13) edge (15); 
-%
-%
-%\end{tikzpicture}  
-%\end{frame}
-%
-%\begin{frame}{Abstractive Summarization}
-%
-%    \begin{tabular}{l l l}
-%        &   Single Sentence Generation & Multiple Sentence Generation\\
-%\cite{barzilay2005sentence}  \\
-%        \cite{zajic2006sentence} \\
-%        \cite{filippova2008sentence} \\
-%        \cite{martins2009summarization} \\
-%        \cite{woodsend2010generation} \\
-%        \cite{berg2011jointly} \\
-%        \cite{wang2013sentence} \\
-%        \cite{pighin2014modelling} \\
-%        \cite{liu2015toward} \\
-%        \cite{rush2015neural} \\
-%
-%
-%
-%    \end{tabular}
-%
-%
-%\end{frame}
-%
-%\begin{frame}{Factoid and Pyramid}
-%
-%\begin{tcolorbox}[title=Factoids] 
-%\begin{itemize}
-%   \item \textbf{Factoid} $\triangleq$ atomic information units
-%    \item definition includes subsumption, equivalence rules  
-%    \item strong agreement in annotation, moderate aggrement in factoid definition
-%\end{itemize}
-%\end{tcolorbox}
-%
-%\begin{tcolorbox}[title=Pyramid] 
-%\begin{itemize}
-%    \item \textbf{Summary Content Units (SCUs)} $\triangleq$ sub-sentential clauses,
-%     whose meaning is repeated across summaries 
-%    \item guidelines are purposely open-ended on what consitutes an SCU
-%\end{itemize}
-%\end{tcolorbox}
-%\end{frame}
-%
-%\begin{frame}{Factoid and Pyramid}
-%\begin{tcolorbox}[title=Factoid \& Pyramid] 
-%\begin{itemize}    
-%    \item weights assigned to each factoid/SCU based on the frequency of 
-%        reference summaries it occurs in
-%    \item summary score is proportional to the sum of the weights of the 
-%        factoids/SCUs contained within
-%\end{itemize}
-%\end{tcolorbox}
-%\end{frame}
-%
-%
-%
-%
-%\begin{frame}{Factoid and Pyramid}
-%
-%Disagreement in annotator stability:
-%
-%\begin{itemize}
-%\item requires 20-30 reference summaries \cite{teufel2004evaluating}
-%\item requires at least 5 reference summaries \cite{nenkova2007pyramid}
-%\item requires at least 2-3 reference summaries for correlation with 
-%    responsiveness \cite{owczarzak2009evaluation}
-%\end{itemize}
-%
-%
-%\end{frame}
-%
-%
-%
-%\begin{frame}{Summary Evaluation (support slide)}
-%\textbf{Linguistic Quality Assessment}, humans judged summaries on 5 qualities:
-%\begin{enumerate}
-%\item Grammaticality
-%\item Non-redundancy
-%\item Referential clarity
-%\item Focus
-%\item Structure and Coherence
-%\end{enumerate}
-%
-%Assessors determined ratings on a 5 point scale.
-%
-%\end{frame}
-%
-%\begin{frame}{Summary Evaluation (support slide)}
-%\textbf{Coverage Assessment}, using a single reference summary, how much of 
-%    the meaning in the reference is covered by the system.
-%
-%Assessors chose on 6 point scale:\\
-% (~0\%~~~~20\%~~~~40\%~~~~60\%~~~~80\%~~~~100\%~)
-%
-%\end{frame}
-%
-%
-%
-%
-%\begin{frame}{Summary Evaluation (support slide)}
-%\textbf{Responsiveness Assessment}, humans judged how well a system summary answers the
-%    information need, given the topic query/user profile.
-%
-%Assessors determined ratings on a 5 point scale. Score is \textbf{relative} 
-%    within each topic. 
-%
-%``The linguistic quality of
-%the summary should play a role in your assessment only insofar as it
-%interferes with the expression of information and reduces the amount
-%of information that is conveyed.'' -- DUC Guidelines
-%
-%\end{frame}
-%
-%\begin{frame}{Summary Evaluation: DUC 2005/2006/2007}
-%
-%    In addition to the NIST evaluation, \\~\\
-%
-%
-%    USC/ISI:\\
-%    ~~~~~ROUGE, Basic Elements\\
-%~\\
-%
-%    Columbia U.:\\
-%    ~~~~~Pyramid
-%
-%\end{frame}
-%
-%\begin{frame}{Summary Evaluation}
-%    \begin{figure}
-%          \small
-%        \rowcolors{2}{gray!5}{white}
-%\begin{tabular}{c | c c || c c c c|}
-%        &  \multicolumn{2}{c||}{Automatic } 
-%        &  \multicolumn{4}{c|}{Manual } \\
-%Year & \alert<2>{ROUGE} & \alert<2>{BE} & \alert<2>{Pyramid} & Ling. Quality & Respons. & \alert<2>{Coverage}\\
-% \hline 
-%'01 & & & &X & & X\\
-%'02 & & & &X & & X\\
-%'03 & & & &X & X & X\\
-%'04 & X & & &X & X & X\\
-%'05 & X & X &X &X &X& \\
-%'06 & X & X &X &X &X& \\
-%'07 & X & X &X &X &X& \\
-%'08 &  &  &X & &X& \\
-%'09 &  &  &X &X &X& \\
-%'10 &  &  &X &X &X& \\
-%'11 &  &  &X &X &X& \\
-%\hline
-%\end{tabular}
-%\end{figure}
-%\uncover<2>{\alert<2>{*Requires a reference summary}}
-%\end{frame}
-%
-%
-%\begin{frame}{Desiderata of Evaluation Metric}
-%
-%\begin{itemize}
-%\item System rankings should be relatively stable given
-%\begin{itemize}
-%\item different human annotators \uncover<2->{(How much human variation?)}
-%\item different reference summaries \uncover<3->{(How many references?)}
-%\item given different topics/document sets \uncover<4->{(How many topics?)}
-%\end{itemize}
-%~\\
-%\item Automatically computable
-%\begin{itemize}
-%\item at least given reference summaries
-%\end{itemize}
-%\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Content Selection Metrics}
-%Requires Reference
-%\begin{itemize}
-%\item ROUGE -- \cite{lin2004rouge}
-%\item Factoids -- \cite{teufel2004evaluating}
-%\item Pyramid -- \cite{nenkova2007pyramid}
-%\begin{itemize}
-%\item LDA -- \cite{hennig2010learning}
-%\item PEAK -- \cite{yang2016peak}
-%\end{itemize}
-%\end{itemize}
-%Reference Free Coverage Metrics
-%\begin{itemize}
-%\item Jensen-Shannon Divergence -- \cite{louis2009automatically}
-%\end{itemize} 
-%\end{frame}
-%
-%
-%
-%
-%
-%
-%
-%\begin{frame}{Example Factoid Analysis}
-%
-%Summary Sentence: \textit{The police have arrested a white Dutch man.}
-%
-%\begin{itemize}
-%\item A suspect was arrested
-%\item The police did the arresting
-%\item The suspect is white
-%\item The suspect is Dutch
-%\item The suspect is male
-%\end{itemize}
-%
-%\end{frame}
-%
-%
-%\begin{frame}{Example SCU}
-%SCU annotation: Lopez left GM for VW
-%\begin{itemize}
-%\item \small{
-%    The industrial espionage case involving GM and VW began with 
-%    \underline{the hiring of Jose Ignacio Lopez, an employee of GM} 
-%    subsidiary Adam Opel,  \underline{by VW} as a production director.}
-%\item \small{
-%    However, \underline{he left GM for VW} under circumstances, which along
-%    with ensuing events, were described by a German judge as ``potentially the
-%    biggest ever case of industrial espionage.''}
-%\item \small{
-%    \underline{He left GM for VW} in March 1993.}
-%\item \small{
-%    The issue stems from the alleged \underline{recruitment of GM's} eccentric
-%    and visionary Basque-born procurement chief \underline{Jose Ignacio Lopez}
-%    de Arriortura and seven of Lopez's business colleagues.}
-%%\item Agnacio Lopez De Arriortua, left his job ... at General Motor's Opel 
-%%        ... to become Volkswagen's ... director
-%\item \small{
-%    In March 1993, \underline{Lopez} and seven other \underline{GM} executives 
-%    \underline{moved to VW} overnight.}
-%\end{itemize}
-%\end{frame}
-%
-%
-%
-%
-%
-%
-%\begin{frame}{Reliability of Metrics}
-%
-%
-%
-% \begin{tikzpicture}[
-%    dep/.style={shape=circle,draw=black, align=center}]
-%\node[] (A) at (0,0) {};
-%\node[] (B) at (6,0) {$\ldots$};
-%\node[] (C) at (0,6) {};
-%\path [-] (A) edge (5.5,0); 
-%\path [->] (6.5,0) edge (8.5,0); 
-%\path [->] (A) edge (C); 
-%\path [-] (1,-.25) edge (1,.25); 
-%\path [-] (2,-.25) edge (2,.25); 
-%\path [-] (3,-.25) edge (3,.25); 
-%\path [-] (4,-.25) edge (4,.25); 
-%\path [-] (7,-.25) edge (7,.25); 
-%\path [-] (8,-.25) edge (8,.25); 
-%\node[] (ZZ) at (7,-.5) {20};
-%\node[] (ZZ) at (8,-.5) {30};
-%
-%\path [-] (-.25,1) edge (.25,1); 
-%\path [-] (-.25,2) edge (.25,2); 
-%\path [-] (-.25,3) edge (.25,3); 
-%\path [-] (-.25,4) edge (.25,4); 
-%\node (XXX) at (1,-.5) {1};
-%\node (XXX) at (2,-.5) {2};
-%\node (XXX) at (3,-.5) {3};
-%\node (XXX) at (4,-.5) {4};
-%\node (XXX) at (-.5,1) {12};
-%\node (XXX) at (-.5,2) {24};
-%\node (XXX) at (-.5,3) {36};
-%\node (XXX) at (-.5,4) {48};
-%
+%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%\end{frame}
+%%\begin{frame}{Extraction by Coverage Optimization}
+%%
+%%    \begin{figure}[!h]
+%%        \centering
+%% \begin{tikzpicture}
+%%     \node (C) at (1.5,5) {Classification};
+%%     \node[rotate=45] (C) at (4.5,-1.7) {Ranking};
+%%     \node[rotate=-45,text=red,opacity=.7] (C) at (-1.5,-1.7) {Coverage Opt.};
+%%     \node (C) at (1.5,4) {\includegraphics[scale=.017]{news_icon}};
+%%     \node (C) at (1.5,3.7) {\tiny \cite{maskey2005comparing}};
+%%     %\node (C) at (1.5,-1) {\includegraphics[scale=.017]{news_icon}};
+%%     \node (C) at (0.3,-1.8) {\includegraphics[scale=.022]{news_icon}};
+%%     \node[text=red,opacity=.7] (C) at (0.3,-2.1) {\tiny \cite{lin2011class}};
+%%     \node (C) at (-1.8,.3) {\includegraphics[scale=.022]{tweet_icon}};
+%%     \node[text=red,opacity=.7] (C) at (-1.8,0) {\tiny \cite{liu2011sxsw}};
+%%     \node (C) at (-.8,-.6) {\includegraphics[scale=.025]{meeting_icon}};
+%%     \node[text=red,opacity=.7] (C) at (-.8,-.9) {\tiny \cite{gillick2009global}};
+%%     \node (C) at (-.4,2.2) {\includegraphics[scale=.022]{news_icon}};
+%%     \node[text=red,opacity=.7] (C) at (-.4,1.9) {\tiny \cite{conroy2005classy}};
+%%     \node (C) at (1.5,3.3) {\includegraphics[scale=.022]{rating_icon}};
+%%     \node (C) at (1.5,3.0) {\tiny \cite{titov2008joint}};
+%%     \node (C) at (4,.4) {\includegraphics[scale=.017]{news_icon}};
+%%     \node (C) at (4,.1) {\tiny \cite{lin2000automated}};
+%%     \node (C) at (4,-.2) {\tiny \cite{erkan2004lexrank}};
+%%     \node (C) at (4,-.5) {\tiny \cite{guo2013updating}};
+%%     \node (C) at (4,-.8) {\tiny \cite{mccreadie2014incremental}};
+%%    \draw[opacity=.2,color=red] (0,0) circle (2.5cm);
+%%    \draw[opacity=.2] (3,0) circle (2.5cm);
+%%    \draw[opacity=.2] (1.5,3) circle (2.5cm);
+%% \end{tikzpicture}
+%% \end{figure}
+%%\end{frame}
+%%
+%%
+%%
+%
+%%
+%%
+%%\begin{frame}{Coverage Optimization}
+%%    \begin{itemize}
+%%\item \textbf{Integer Linear Program} 
+%%
+%%    \begin{align}
+%%        \max \sum_i w_i c_i&\\
+%%    \mathrm{s.t.} &\sum_j l_j u_j < L \\
+%%                  & \sum_j u_j o_{ij} \ge c_i \;\;\; \forall i\\
+%%        & u_j o_{ij} \le c_i \;\;\; \forall i,j
+%%    \end{align}
+%%    where $c_i,u_j, o_{ij}\in \{0,1\}$, $l_j, L \in \mathcal{N}$, $w_i \in \mathcal{R}$\\
+%%    $c_i$ are concepts (ngrams), $w_i$ is a concept weight (frequency),\\
+%%    $u_j$ indicates whether sentence $j$ is selected for summary,\\
+%%    $l_j$ is the length of sentence $j$ and $L$ is the length budget,\\
+%%    $o_{ij}$ indicates whether concept $i$ occurs in sentence $j$ \\
+%%
+%%    \end{itemize}
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Heuristics}
+%%\cite{nenkova2005impact} -- isolate the effects of frequency for extraction
+%%  
+%%\begin{itemize}
+%%\item very competetive ROUGE performance
+%%\item greedy algorithm for computing summaries 
+%% \item performance possibly due to reweighting, 
+%%\begin{itemize}
+%%\item unreweighted summaries have 
+%%    much lower ROUGE
+%%\item unreweighted algo. is approx. of document likelihood objective in \cite{louis2009automatically}, which poorly correlates with human judgements
+%%\end{itemize}
+%%\end{itemize}
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Heuristics}
+%%\cite{nenkova2005impact} -- examine weighting pyramid annotations (potentially remove need for model 
+%%    summary annotation)
+%%\begin{itemize}
+%%\item strong but imperfect correlation
+%%\item frequency does not fully explain content selection
+%%\begin{figure}
+%%\centering
+%%\begin{tabular}{l| l| l| l}
+%%         & Top 5              & Top 8              & Top 12  \\
+%%\hline
+%%human    & \alert<2>{94.66\%} & \alert<3>{91.25\%} & \alert<4>{85.25\%} \\
+%%\hline
+%%machine  & 84.00\%            & 77.87\%            & 66.08\% \\
+%%\hline
+%%SumBasic & \alert<2>{96.00\%} & \alert<3>{95.00\%} & \alert<4>{90.83\%} \\
+%%\end{tabular}
+%%
+%%\end{figure}
+%%\item SumBasic consistently \alert<2->{over-estimates} frequency importance vs human
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Heuristics}
+%%\cite{lin2000automated} -- automatic method for finding key phrases/terms 
+%%    using likelihood ratios
+%%\begin{itemize}
+%%\item $\mathcal{R} \triangleq$ relevant docs; 
+%%    $\tilde{\mathcal{R}} \triangleq$ irrelevant docs;
+%%    $t \triangleq $ ngram 
+%%\item Hypothesis 1 ($H_1$): $P(\mathcal{R}|t) = P(\tilde{\mathcal{R}}|t)$
+%%\item Hypothesis 2 ($H_2$): $P(\mathcal{R}|t) \gg P(\tilde{\mathcal{R}}|t)$
+%%\item large $L(H_2) \rightarrow $ large  $ -2\log\frac{L(H_1)}{L(H_2)} $
+%%\end{itemize}
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Heuristics}
+%%\cite{lin2000automated} -- automatic method for finding key phrases/terms 
+%%    using likelihood ratios
+%%\begin{itemize}
+%%\item ranking sentences by topic signatures outperforms tfidf and lead 
+%%    baselines
+%%\item limited evaluation (only 4 topics)
+%%\item however, \cite{louis2009automatically} find moderate positive 
+%%    correlation between topic signature coverage and human responsiveness 
+%%    scores
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Random Walks on Sentences}
+%%\cite{erkan2004lexrank} -- Extract sentences via graph-based notion of 
+%%    centrality
+%%\begin{itemize}
+%%\item sentences are \textit{nodes} in a \textit{graph}, 
+%%\item \textit{edges} are weighted by sentence similarity
+%%\item PageRank finds an eigenvector of the adjacency matrix
+%%\item eigenvector elements are interpretable as a ranking of sentence centrality
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Random Walks on Sentences}
+%%\cite{erkan2004lexrank} -- Extract sentences via graph-based notion of 
+%%    centrality
+%%\begin{itemize}
+%%\item language agnostic
+%%\item generally benefits from reranking to handle redundancy
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Query Focused Summarization}
+%%\cite{conroy2005classy} -- use query term and topic signature matches as 
+%%    features in an hidden Markov model (HMM).
+%%\begin{itemize}
+%%\item selection with HMM, requires extractive gold summaries
+%%\item reranking step performed with pivoted QR decomposition
+%%\item Named Entity (NE) tagging not helpful, despite HACKY exploitation of 
+%%    ROUGE-1
+%%\item High pyramid scores, despite low ROUGE-1 performance
+%%\end{itemize}
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Streaming Summarization}
+%%\cite{guo2013updating} -- define streaming summarization task, exploratory
+%%    system design and evaluation
+%%\begin{itemize}
+%%\item explore sentence selection from first 10 sentences or headline only
+%%\item effects of stationary/non-stationary features
+%%\item non-stationary features introduce importance of buffering policy
+%%\item feature combination for first 10 sentences best overall
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Streaming Summarization}
+%%\cite{mccreadie2014incremental} -- Streaming summarization systems are noisy
+%%    during periods of downtime; learn to predict rank cutoff to reduce noise
+%%\begin{itemize}
+%%\item this task is hard -- very large gap between oracle and current top 
+%%    performance
+%%\item improved recall measure but precision? Counter-intuitive result? 
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Summarization in other Domains}
+%%\cite{maskey2005comparing} -- Broadcast news speech summarization
+%%\begin{itemize}
+%%\item Prosodic/Acoustic features complement lexical features
+%%\item Suggests speech summarization without transcription is possible
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Summarization in other Domains}
+%%\cite{titov2008joint} -- Review/Opinion summarization; Correlate LDA-style 
+%%    topics with ratings values
+%%\begin{itemize}
+%%\item model allows for extraction of sentences for different aspects of review
+%%\item very competitive with a supervised extractive model 
+%%\end{itemize}
+%% 
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Summarization in other Domains}
+%%\cite{gillick2009global} -- Meeting summarization; use ILP solver to maximize
+%%    ngram coverage subject to length and speaker constraints
+%%\begin{itemize}
+%%\item were able to obtain oracle ROUGE scores
+%%\item remaining improvement should be found in improving coherence and other
+%%    linguistic qualities 
+%%\end{itemize}
+%%\end{frame}
+%%
+%%\begin{frame}{Summarization in other Domains}
+%%\cite{liu2011sxsw} -- Twitter summarization; use ILP solver to maximize
+%%    ngram coverage subject to length and speaker constraints
+%%\begin{itemize}
+%%\item compare multiple input sources: tweets/normalized tweets or linked web
+%% text, or combination 
+%%\item only tiny variation in ROUGE depending on input
+%%\item Web Text inputs yield higher grammaticality scores
+%%\item Tweet inputs yield higher clarity and focus scores
+%%\end{itemize}
+%%\end{frame}
+%%
+%%
+%
+%%
+%%
+%%
+%%
+%%\begin{frame}{Abstractive Summarization - Approaches}
+%%    \begin{figure}
+%%          \small
+%%        \rowcolors{2}{gray!5}{white}
+%%    \begin{tabular}{l | l | l |}
+%%        \hline
+%%        &  \multicolumn{2}{c|}{Approach } \\
+%%    & Fuse & Compress \\
+%%        \hline
+%%        \cite{barzilay2005sentence} & X &  \\
+%%        \hline
+%%        \cite{zajic2006sentence}    & & X \\
+%%        \hline
+%%        \cite{filippova2008sentence} & X & \\
+%%        \hline
+%%        \cite{martins2009summarization} & & X \\
+%%        \hline
+%%        \cite{woodsend2010generation}  &  & X \\
+%%        \hline
+%%        \cite{berg2011jointly} & & X\\
+%%        \hline
+%%        \cite{wang2013sentence} & & X \\
+%%        \hline
+%%        \cite{pighin2014modelling} & &  \\
+%%        \hline
+%%        \cite{liu2015toward} & X & X \\
+%%        \hline
+%%        \cite{rush2015neural} & & X \\
+%%        \hline
+%%    \end{tabular}
+%%\end{figure}
+%%
+%%
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Abstractive Summarization - Approaches}
+%%    \begin{figure}
+%%          \small
+%%        \rowcolors{2}{gray!5}{white}
+%%    \begin{tabular}{l | l | l || l | l |}
+%%        \hline
+%%        &  \multicolumn{2}{c|}{Approach } &  \multicolumn{2}{c|}{Inference}  \\
+%%        & Fuse & Compress & ILP & Search\\
+%%        \hline
+%%        \cite{barzilay2005sentence} & X & &  & X \\
+%%        \hline
+%%        \cite{zajic2006sentence}    & & X & & X\\
+%%        \hline
+%%        \cite{filippova2008sentence} & X & & X & X\\
+%%        \hline
+%%        \cite{martins2009summarization} & & X & X&\\
+%%        \hline
+%%        \cite{woodsend2010generation}  &  & X  & X&\\
+%%        \hline
+%%        \cite{berg2011jointly} & & X & X &\\
+%%        \hline
+%%        \cite{wang2013sentence} & & X & &  X \\
+%%        \hline
+%%        \cite{pighin2014modelling} & &  & & X \\
+%%        \hline
+%%        \cite{liu2015toward} & X & X & X & \\
+%%        \hline
+%%        \cite{rush2015neural} & & X &  & X \\
+%%        \hline
+%%    \end{tabular}
+%%\end{figure}
+%%
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Fusion}
+%% \begin{tikzpicture}[
+%%    dep/.style={shape=circle,draw=black, align=center, scale=.4}]
+%%\node[dep] (A) at (0,0) {confirm};
+%%\node[dep] (B) at (-1,-1) {IDF \\ spokeswoman};
+%%\node[dep] (C) at (0,-1) {this};
+%%\node[dep] (D) at (1,-1) {but};
+%%\node[dep] (E) at (1,-2) {said};
+%%\node[dep] (F) at (1,-3) {fire};
+%%\node[dep] (G) at (1,-4) {antitank \\ missile};
+%%\node[dep] (H) at (-.5,-4) {Palestinian};
+%%\node[dep] (I) at (2,-4) {at};
+%%\node[dep] (J) at (2,-5) {bulldozer};
+%%\path [->] (A) edge (B); 
+%%\path [->] (A) edge (C); 
 %%\path [->] (A) edge (D); 
 %%\path [->] (D) edge (E); 
-%
-%
-%\node[] (C) at (2,3) {Pyramid};
-%\node[] (C) at (3,3.5) {ROUGE};
-%\node[] (C) at (7.5,2) {Factoid};
-%\path[-|] (7.5,2.5) edge (7.5,5.5);
-%\path[-|] (7.5,1.5) edge (7.5,0.2);
-%\node[] (C) at (3,-1) {num. of references};
-%\node[rotate=90] (C) at (-1,3) {num. of topics};
-%
-%\end{tikzpicture}
-%
-%
-%\end{frame}
-%
-%
-%
-%\begin{frame}{Evaluating Update Summaries}
-%\cite{conroy2011nouveau} -- there is a gap between automatic metrics of human 
-% update summaries and machine generated summaries
-%\begin{figure}
-%\centering
-%\includegraphics[width=\linewidth,height=.7\textheight,keepaspectratio]{metric_gap_rouge.jpg}
-%\end{figure}
-%\end{frame}
-%
-%\begin{frame}{Evaluating Update Summaries}
-%\cite{conroy2011nouveau} -- there is a gap between automatic metrics of human 
-% update summaries and machine generated summaries
-%\begin{itemize}
-%\item $NouveauRouge = \alpha_{AB} Rouge(A,B) + \alpha_{BB} Rouge(B,B) + \alpha_0$
-%\item $Rouge(A,B) \triangleq$ ROUGE score of system update summary to 
-%         model original summary
-%\item $Rouge(B,B) \triangleq$ ROUGE score of system update summary to 
-%         model update summary
-%\item in fitted model: 
-%\begin{itemize}
-%\item $\alpha_{A,B} < 0$ 
-%\item $\alpha_{B,B} > 0$ 
-%\end{itemize}
-%\end{itemize}
-%
-%\end{frame}
-%
-%
-%
-%
-%%\begin{frame}{Responsiveness 2003} 
-%%Query focused summarization $\rightarrow$ \textbf{intrinsic} evaluation: 
-%%Responsiveness
+%%\path [->] (E) edge (F); 
+%%\path [->] (F) edge (G); 
+%%\path [->] (F) edge (H); 
+%%\path [->] (F) edge (I); 
+%%\path [->] (I) edge (J); 
 %%
-%%\small{
-%%You have been given a question (topic), the relevant sentences from a document set, and a number of short summaries of those sentences - designed to answer the question. Some of the summaries may be more responsive (in form and content) to the question than others. Your task is to help us understand how relatively well each summary responds to the question.
-%%Read the question and all the associated short summaries. Consult the relevant sentences in the document set as needed. Then grade each summary according to how responsive it is to the question: 0 (worst, unresponsive), 1, 2, 3, or 4 (best, fully responsive). 
-%%}
+%%
+%%\node[dep] (1) at (5,0) {erupt};
+%%\node[dep] (2) at (4.5,-1) {clash};
+%%\node[dep] (3) at (5.5,-1) {when};
+%%\node[dep] (4) at (5.5,-2) {fire};
+%%\node[dep] (5) at (4.0,-3.5) {Palestinian \\ militant};
+%%\node[dep] (6) at (5.5,-3.5) {machine gun \\ and antitank \\ missile};
+%%\node[dep] (7) at (6.5,-3.5) {at};
+%%\node[dep] (8) at (6.5,-4.5) {that};
+%%\node[dep] (9) at (6.5,-5.5) {build};
+%%\node[dep] (10) at (5.5,-6.5) {embarkment};
+%%\node[dep] (11) at (6.5,-6.5) {in};
+%%\node[dep] (12) at (6.5,-7.5) {area};
+%%\node[dep] (13) at (7.5,-6.5) {protect};
+%%\node[dep] (14) at (7.5,-7.5) {better};
+%%\node[dep] (15) at (8.5,-7.5) {Israeli \\ force};
+%%
+%%\path [->] (1) edge (2); 
+%%\path [->] (1) edge (3); 
+%%\path [->] (3) edge (4); 
+%%\path [->] (4) edge (5); 
+%%\path [->] (4) edge (6); 
+%%\path [->] (4) edge (7); 
+%%\path [->] (7) edge (8); 
+%%\path [->] (8) edge (9); 
+%%\path [->] (9) edge (10); 
+%%\path [->] (9) edge (11); 
+%%\path [->] (9) edge (13); 
+%%\path [->] (11) edge (12); 
+%%\path [->] (13) edge (14); 
+%%\path [->] (13) edge (15); 
+%%
+%%
+%%\end{tikzpicture}  
+%%\end{frame}
+%%
+%%\begin{frame}{Abstractive Summarization}
+%%
+%%    \begin{tabular}{l l l}
+%%        &   Single Sentence Generation & Multiple Sentence Generation\\
+%%\cite{barzilay2005sentence}  \\
+%%        \cite{zajic2006sentence} \\
+%%        \cite{filippova2008sentence} \\
+%%        \cite{martins2009summarization} \\
+%%        \cite{woodsend2010generation} \\
+%%        \cite{berg2011jointly} \\
+%%        \cite{wang2013sentence} \\
+%%        \cite{pighin2014modelling} \\
+%%        \cite{liu2015toward} \\
+%%        \cite{rush2015neural} \\
+%%
+%%
+%%
+%%    \end{tabular}
+%%
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Factoid and Pyramid}
+%%
+%%\begin{tcolorbox}[title=Factoids] 
+%%\begin{itemize}
+%%   \item \textbf{Factoid} $\triangleq$ atomic information units
+%%    \item definition includes subsumption, equivalence rules  
+%%    \item strong agreement in annotation, moderate aggrement in factoid definition
+%%\end{itemize}
+%%\end{tcolorbox}
+%%
+%%\begin{tcolorbox}[title=Pyramid] 
+%%\begin{itemize}
+%%    \item \textbf{Summary Content Units (SCUs)} $\triangleq$ sub-sentential clauses,
+%%     whose meaning is repeated across summaries 
+%%    \item guidelines are purposely open-ended on what consitutes an SCU
+%%\end{itemize}
+%%\end{tcolorbox}
+%%\end{frame}
+%%
+%%\begin{frame}{Factoid and Pyramid}
+%%\begin{tcolorbox}[title=Factoid \& Pyramid] 
+%%\begin{itemize}    
+%%    \item weights assigned to each factoid/SCU based on the frequency of 
+%%        reference summaries it occurs in
+%%    \item summary score is proportional to the sum of the weights of the 
+%%        factoids/SCUs contained within
+%%\end{itemize}
+%%\end{tcolorbox}
 %%\end{frame}
 %%
 %%
 %%
-%%\begin{frame}{Evaluating Summarization}
-%%\cite{lin2004rouge} -- ROUGE is the most prevalent automatic measurement tool
-%% in use for summarization task.
+%%
+%%\begin{frame}{Factoid and Pyramid}
+%%
+%%Disagreement in annotator stability:
+%%
 %%\begin{itemize}
-%%\item recall focused, measures average overlap of system/human summary ngrams
-%%\item many shades: ngram sizes 1 - 9, skip-grams, longest common subsequence 
-%%\item Strong correlation with single doc human coverage scores
-%%\item Reasonable correlation with multi-doc converage scores 
-%%    (largest sample size only 59)
+%%\item requires 20-30 reference summaries \cite{teufel2004evaluating}
+%%\item requires at least 5 reference summaries \cite{nenkova2007pyramid}
+%%\item requires at least 2-3 reference summaries for correlation with 
+%%    responsiveness \cite{owczarzak2009evaluation}
+%%\end{itemize}
+%%
+%%
+%%\end{frame}
+%%
+%%
+%%
+%%\begin{frame}{Summary Evaluation (support slide)}
+%%\textbf{Linguistic Quality Assessment}, humans judged summaries on 5 qualities:
+%%\begin{enumerate}
+%%\item Grammaticality
+%%\item Non-redundancy
+%%\item Referential clarity
+%%\item Focus
+%%\item Structure and Coherence
+%%\end{enumerate}
+%%
+%%Assessors determined ratings on a 5 point scale.
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Summary Evaluation (support slide)}
+%%\textbf{Coverage Assessment}, using a single reference summary, how much of 
+%%    the meaning in the reference is covered by the system.
+%%
+%%Assessors chose on 6 point scale:\\
+%% (~0\%~~~~20\%~~~~40\%~~~~60\%~~~~80\%~~~~100\%~)
+%%
+%%\end{frame}
+%%
+%%
+%%
+%%
+%%\begin{frame}{Summary Evaluation (support slide)}
+%%\textbf{Responsiveness Assessment}, humans judged how well a system summary answers the
+%%    information need, given the topic query/user profile.
+%%
+%%Assessors determined ratings on a 5 point scale. Score is \textbf{relative} 
+%%    within each topic. 
+%%
+%%``The linguistic quality of
+%%the summary should play a role in your assessment only insofar as it
+%%interferes with the expression of information and reduces the amount
+%%of information that is conveyed.'' -- DUC Guidelines
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Summary Evaluation: DUC 2005/2006/2007}
+%%
+%%    In addition to the NIST evaluation, \\~\\
+%%
+%%
+%%    USC/ISI:\\
+%%    ~~~~~ROUGE, Basic Elements\\
+%%~\\
+%%
+%%    Columbia U.:\\
+%%    ~~~~~Pyramid
+%%
+%%\end{frame}
+%%
+%%\begin{frame}{Summary Evaluation}
+%%    \begin{figure}
+%%          \small
+%%        \rowcolors{2}{gray!5}{white}
+%%\begin{tabular}{c | c c || c c c c|}
+%%        &  \multicolumn{2}{c||}{Automatic } 
+%%        &  \multicolumn{4}{c|}{Manual } \\
+%%Year & \alert<2>{ROUGE} & \alert<2>{BE} & \alert<2>{Pyramid} & Ling. Quality & Respons. & \alert<2>{Coverage}\\
+%% \hline 
+%%'01 & & & &X & & X\\
+%%'02 & & & &X & & X\\
+%%'03 & & & &X & X & X\\
+%%'04 & X & & &X & X & X\\
+%%'05 & X & X &X &X &X& \\
+%%'06 & X & X &X &X &X& \\
+%%'07 & X & X &X &X &X& \\
+%%'08 &  &  &X & &X& \\
+%%'09 &  &  &X &X &X& \\
+%%'10 &  &  &X &X &X& \\
+%%'11 &  &  &X &X &X& \\
+%%\hline
+%%\end{tabular}
+%%\end{figure}
+%%\uncover<2>{\alert<2>{*Requires a reference summary}}
+%%\end{frame}
+%%
+%%
+%%\begin{frame}{Desiderata of Evaluation Metric}
+%%
+%%\begin{itemize}
+%%\item System rankings should be relatively stable given
+%%\begin{itemize}
+%%\item different human annotators \uncover<2->{(How much human variation?)}
+%%\item different reference summaries \uncover<3->{(How many references?)}
+%%\item given different topics/document sets \uncover<4->{(How many topics?)}
+%%\end{itemize}
+%%~\\
+%%\item Automatically computable
+%%\begin{itemize}
+%%\item at least given reference summaries
+%%\end{itemize}
 %%\end{itemize}
 %%\end{frame}
 %%
-%%\begin{frame}{Evaluating Summarization}
-%%Criticisms of ROUGE:
+%%\begin{frame}{Content Selection Metrics}
+%%Requires Reference
 %%\begin{itemize}
-%%\item insensitive to lexical variation
-%%\item uniformly rewards sequence matches, e.g.``of the'' probably not indicative of anything
-%%\item insensitive to linguistic quality, e.g. coherence or disource
-%%\item correlation for MDS is only strong at the 200 and 400 word length
+%%\item ROUGE -- \cite{lin2004rouge}
+%%\item Factoids -- \cite{teufel2004evaluating}
+%%\item Pyramid -- \cite{nenkova2007pyramid}
+%%\begin{itemize}
+%%\item LDA -- \cite{hennig2010learning}
+%%\item PEAK -- \cite{yang2016peak}
 %%\end{itemize}
-%%\end{frame}
-%%
-%%\begin{frame}{Evaluating Summarization}
-%%
-%%\cite{hovy2006automated} -- Basic Elements (BE) uses phrase head/modifier words
-%% as unit of analysis
-%%
-%%\begin{itemize}
-%%\item High correlation with responsivenss scores and ROUGE
-%%\item Unclear if BE tells us anything ROUGE doesn't
-%%\item more computationally expensive -- requires parser
-%%\item \cite{owczarzak2009evaluation} found BE to be more unstable under different number of model summaries
 %%\end{itemize}
-%%\end{frame}
-%%
-%%\begin{frame}{Evaluating Summarization}
-%%\cite{teufel2004evaluating} develop annotation guidelines for factoid 
-%%definition and annotation, summaries ranked by \# of factoids they contain
+%%Reference Free Coverage Metrics
 %%\begin{itemize}
-%%\item high agreement on annotation
-%%\item moderate agreement on definition
-%%\item takes 20-30 reference summaries for ranking to stabilize!
-%%\item poor correlation to DUC information overlap?!
+%%\item Jensen-Shannon Divergence -- \cite{louis2009automatically}
 %%\end{itemize} 
 %%\end{frame}
 %%
-%%\begin{frame}{Evaluating Summarization}
-%%\cite{nenkova2007pyramid} -- Pyramid: annotation scheme for extracting 
-%%    summary content units (SCUs) from model summaries \\
-%%    system summaries score by importance weighted sum of SCUs they contain
+%%
+%%
+%%
+%%
+%%
+%%
+%%\begin{frame}{Example Factoid Analysis}
+%%
+%%Summary Sentence: \textit{The police have arrested a white Dutch man.}
+%%
 %%\begin{itemize}
-%%\item score differences stabilize with 4-5 model summaries (compared to 
-%%    20-30 in \cite{teufel2004evaluating})
-%%\item moderate interannotator aggreement on peer annotation
-%%\item strong interannotator score correlation 
-%%\end{itemize} 
-%%
-%%\end{frame}
-%%
-%%\begin{frame}{Explaining Variation in Evaluation Metrics}
-%%
-%%\cite{nenkova2005automatic} -- ANOVA on official DUC coverage scores
-%%\begin{itemize}
-%%\item controlled for system and input (and length in MDS)
-%%\item (generic MDS) differences between systems and baseline are not 
-%%    significant for word lengths 50 and 100  
-%%\item  (generic SDS) no system outperforms baseline; 8/10 humans outperform 
-%%    baseline 
+%%\item A suspect was arrested
+%%\item The police did the arresting
+%%\item The suspect is white
+%%\item The suspect is Dutch
+%%\item The suspect is male
 %%\end{itemize}
 %%
 %%\end{frame}
 %%
-%%\begin{frame}{Explaining Variation in Evaluation Metrics}
-%%\cite{owczarzak2009evaluation} -- examines stability of system ranking with
-%%    automatic evaluation against TAC Responsiveness Scores  
+%%
+%%\begin{frame}{Example SCU}
+%%SCU annotation: Lopez left GM for VW
 %%\begin{itemize}
-%%\item examined Pyramid, ROUGE-2, ROUGE-SU4, and Basic Elements
-%%\item correlation to manual metrics stabilizes after 2 models
-%%\item Contrary to \cite{teufel2004evaluating}, argues for more system inputs 
-%%    with fewer human models 
+%%\item \small{
+%%    The industrial espionage case involving GM and VW began with 
+%%    \underline{the hiring of Jose Ignacio Lopez, an employee of GM} 
+%%    subsidiary Adam Opel,  \underline{by VW} as a production director.}
+%%\item \small{
+%%    However, \underline{he left GM for VW} under circumstances, which along
+%%    with ensuing events, were described by a German judge as ``potentially the
+%%    biggest ever case of industrial espionage.''}
+%%\item \small{
+%%    \underline{He left GM for VW} in March 1993.}
+%%\item \small{
+%%    The issue stems from the alleged \underline{recruitment of GM's} eccentric
+%%    and visionary Basque-born procurement chief \underline{Jose Ignacio Lopez}
+%%    de Arriortura and seven of Lopez's business colleagues.}
+%%%\item Agnacio Lopez De Arriortua, left his job ... at General Motor's Opel 
+%%%        ... to become Volkswagen's ... director
+%%\item \small{
+%%    In March 1993, \underline{Lopez} and seven other \underline{GM} executives 
+%%    \underline{moved to VW} overnight.}
 %%\end{itemize}
 %%\end{frame}
-%
-%\begin{frame}{Summary Evaluation}
-%
-%    \begin{itemize}
-%        \item evaluation w/o model seems possible
-%        \item potential issues with evaluation of update/query summarization
-%        \item eventual breakdown of content selection metrics?
-%    \end{itemize}
-%
-%\end{frame}
+%%
+%%
+%%
+%%
+%%
+%%
+%%\begin{frame}{Reliability of Metrics}
+%%
+%%
+%%
+%% \begin{tikzpicture}[
+%%    dep/.style={shape=circle,draw=black, align=center}]
+%%\node[] (A) at (0,0) {};
+%%\node[] (B) at (6,0) {$\ldots$};
+%%\node[] (C) at (0,6) {};
+%%\path [-] (A) edge (5.5,0); 
+%%\path [->] (6.5,0) edge (8.5,0); 
+%%\path [->] (A) edge (C); 
+%%\path [-] (1,-.25) edge (1,.25); 
+%%\path [-] (2,-.25) edge (2,.25); 
+%%\path [-] (3,-.25) edge (3,.25); 
+%%\path [-] (4,-.25) edge (4,.25); 
+%%\path [-] (7,-.25) edge (7,.25); 
+%%\path [-] (8,-.25) edge (8,.25); 
+%%\node[] (ZZ) at (7,-.5) {20};
+%%\node[] (ZZ) at (8,-.5) {30};
+%%
+%%\path [-] (-.25,1) edge (.25,1); 
+%%\path [-] (-.25,2) edge (.25,2); 
+%%\path [-] (-.25,3) edge (.25,3); 
+%%\path [-] (-.25,4) edge (.25,4); 
+%%\node (XXX) at (1,-.5) {1};
+%%\node (XXX) at (2,-.5) {2};
+%%\node (XXX) at (3,-.5) {3};
+%%\node (XXX) at (4,-.5) {4};
+%%\node (XXX) at (-.5,1) {12};
+%%\node (XXX) at (-.5,2) {24};
+%%\node (XXX) at (-.5,3) {36};
+%%\node (XXX) at (-.5,4) {48};
+%%
+%%%\path [->] (A) edge (D); 
+%%%\path [->] (D) edge (E); 
+%%
+%%
+%%\node[] (C) at (2,3) {Pyramid};
+%%\node[] (C) at (3,3.5) {ROUGE};
+%%\node[] (C) at (7.5,2) {Factoid};
+%%\path[-|] (7.5,2.5) edge (7.5,5.5);
+%%\path[-|] (7.5,1.5) edge (7.5,0.2);
+%%\node[] (C) at (3,-1) {num. of references};
+%%\node[rotate=90] (C) at (-1,3) {num. of topics};
+%%
+%%\end{tikzpicture}
+%%
+%%
+%%\end{frame}
+%%
+%%
+%%
+%%\begin{frame}{Evaluating Update Summaries}
+%%\cite{conroy2011nouveau} -- there is a gap between automatic metrics of human 
+%% update summaries and machine generated summaries
+%%\begin{figure}
+%%\centering
+%%\includegraphics[width=\linewidth,height=.7\textheight,keepaspectratio]{metric_gap_rouge.jpg}
+%%\end{figure}
+%%\end{frame}
+%%
+%%\begin{frame}{Evaluating Update Summaries}
+%%\cite{conroy2011nouveau} -- there is a gap between automatic metrics of human 
+%% update summaries and machine generated summaries
+%%\begin{itemize}
+%%\item $NouveauRouge = \alpha_{AB} Rouge(A,B) + \alpha_{BB} Rouge(B,B) + \alpha_0$
+%%\item $Rouge(A,B) \triangleq$ ROUGE score of system update summary to 
+%%         model original summary
+%%\item $Rouge(B,B) \triangleq$ ROUGE score of system update summary to 
+%%         model update summary
+%%\item in fitted model: 
+%%\begin{itemize}
+%%\item $\alpha_{A,B} < 0$ 
+%%\item $\alpha_{B,B} > 0$ 
+%%\end{itemize}
+%%\end{itemize}
+%%
+%%\end{frame}
+%%
+%%
+%%
+%%
+%%%\begin{frame}{Responsiveness 2003} 
+%%%Query focused summarization $\rightarrow$ \textbf{intrinsic} evaluation: 
+%%%Responsiveness
+%%%
+%%%\small{
+%%%You have been given a question (topic), the relevant sentences from a document set, and a number of short summaries of those sentences - designed to answer the question. Some of the summaries may be more responsive (in form and content) to the question than others. Your task is to help us understand how relatively well each summary responds to the question.
+%%%Read the question and all the associated short summaries. Consult the relevant sentences in the document set as needed. Then grade each summary according to how responsive it is to the question: 0 (worst, unresponsive), 1, 2, 3, or 4 (best, fully responsive). 
+%%%}
+%%%\end{frame}
+%%%
+%%%
+%%%
+%%%\begin{frame}{Evaluating Summarization}
+%%%\cite{lin2004rouge} -- ROUGE is the most prevalent automatic measurement tool
+%%% in use for summarization task.
+%%%\begin{itemize}
+%%%\item recall focused, measures average overlap of system/human summary ngrams
+%%%\item many shades: ngram sizes 1 - 9, skip-grams, longest common subsequence 
+%%%\item Strong correlation with single doc human coverage scores
+%%%\item Reasonable correlation with multi-doc converage scores 
+%%%    (largest sample size only 59)
+%%%\end{itemize}
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Evaluating Summarization}
+%%%Criticisms of ROUGE:
+%%%\begin{itemize}
+%%%\item insensitive to lexical variation
+%%%\item uniformly rewards sequence matches, e.g.``of the'' probably not indicative of anything
+%%%\item insensitive to linguistic quality, e.g. coherence or disource
+%%%\item correlation for MDS is only strong at the 200 and 400 word length
+%%%\end{itemize}
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Evaluating Summarization}
+%%%
+%%%\cite{hovy2006automated} -- Basic Elements (BE) uses phrase head/modifier words
+%%% as unit of analysis
+%%%
+%%%\begin{itemize}
+%%%\item High correlation with responsivenss scores and ROUGE
+%%%\item Unclear if BE tells us anything ROUGE doesn't
+%%%\item more computationally expensive -- requires parser
+%%%\item \cite{owczarzak2009evaluation} found BE to be more unstable under different number of model summaries
+%%%\end{itemize}
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Evaluating Summarization}
+%%%\cite{teufel2004evaluating} develop annotation guidelines for factoid 
+%%%definition and annotation, summaries ranked by \# of factoids they contain
+%%%\begin{itemize}
+%%%\item high agreement on annotation
+%%%\item moderate agreement on definition
+%%%\item takes 20-30 reference summaries for ranking to stabilize!
+%%%\item poor correlation to DUC information overlap?!
+%%%\end{itemize} 
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Evaluating Summarization}
+%%%\cite{nenkova2007pyramid} -- Pyramid: annotation scheme for extracting 
+%%%    summary content units (SCUs) from model summaries \\
+%%%    system summaries score by importance weighted sum of SCUs they contain
+%%%\begin{itemize}
+%%%\item score differences stabilize with 4-5 model summaries (compared to 
+%%%    20-30 in \cite{teufel2004evaluating})
+%%%\item moderate interannotator aggreement on peer annotation
+%%%\item strong interannotator score correlation 
+%%%\end{itemize} 
+%%%
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Explaining Variation in Evaluation Metrics}
+%%%
+%%%\cite{nenkova2005automatic} -- ANOVA on official DUC coverage scores
+%%%\begin{itemize}
+%%%\item controlled for system and input (and length in MDS)
+%%%\item (generic MDS) differences between systems and baseline are not 
+%%%    significant for word lengths 50 and 100  
+%%%\item  (generic SDS) no system outperforms baseline; 8/10 humans outperform 
+%%%    baseline 
+%%%\end{itemize}
+%%%
+%%%\end{frame}
+%%%
+%%%\begin{frame}{Explaining Variation in Evaluation Metrics}
+%%%\cite{owczarzak2009evaluation} -- examines stability of system ranking with
+%%%    automatic evaluation against TAC Responsiveness Scores  
+%%%\begin{itemize}
+%%%\item examined Pyramid, ROUGE-2, ROUGE-SU4, and Basic Elements
+%%%\item correlation to manual metrics stabilizes after 2 models
+%%%\item Contrary to \cite{teufel2004evaluating}, argues for more system inputs 
+%%%    with fewer human models 
+%%%\end{itemize}
+%%%\end{frame}
+%%
+%%\begin{frame}{Summary Evaluation}
+%%
+%%    \begin{itemize}
+%%        \item evaluation w/o model seems possible
+%%        \item potential issues with evaluation of update/query summarization
+%%        \item eventual breakdown of content selection metrics?
+%%    \end{itemize}
+%%
+%%\end{frame}
 
-\bibliographystyle{apalike}
+\bibliographystyle{plainnat}
 \bibliography{references}
 
 
