@@ -11,6 +11,7 @@
 \usetikzlibrary{calc}
 \usepackage{graphicx,import}
 \usepackage{tcolorbox}
+\usepackage{bbm}
 
 \makeatletter
 \newcommand\SoulColor{%
@@ -69,7 +70,7 @@
 
 
 
-\begin{frame}{Summary Tasks}
+\begin{frame}{Summarization Tasks}
 \only<1>{\resizebox{\textwidth}{!}{\Huge{\import{svg/}{tasks1.pdf_tex}}}}
 \only<2>{\resizebox{\textwidth}{!}{\Huge{\import{svg/}{tasks2.pdf_tex}}}}
 \only<3>{\resizebox{\textwidth}{!}{\Huge{\import{svg/}{tasks3.pdf_tex}}}}
@@ -224,7 +225,7 @@
   \only<1-4>{
    \uncover<2-4>{
     \begin{itemize}
-      \tiny 
+      \scriptsize
       \item
         The industrial espionage case involving GM and VW began with 
         \SoulColor\hl{the} \SoulColor\hl{hiring of Jose Ignacio Lopez, an 
@@ -339,7 +340,7 @@
  \begin{itemize}
         \small
    \item De facto standard evaluation tool outside of DUC/TAC.
-   \conit{Insensitive to lexical variation.}
+   \conit{Insensitive to semantics/synonomy.}
    \conit{Correlation with coverage is only strong at 200 and 400 word 
         length!\\
     \spit {\scriptsize \citep{lin2004rouge,nenkova2005automatic}}}
@@ -464,7 +465,7 @@
    \only<-3>{\item (DUC 06) Moderate correlation with pyramid scores (.7094).}
    \only<4->{\proit{(DUC 06) Moderate correlation with pyramid 
         scores (.7094).}}
-   \only<-4>{\item unclear if the rank correlation is higher than ROUGE-2.}
+   \only<-4>{\item Unclear if the rank correlation is higher than ROUGE-2.}
    \only<5>{\conit{Unclear if the rank correlation is higher than 
         ROUGE-2.}}
  \end{itemize}
@@ -767,7 +768,7 @@ Examines correlation between
         \node at (3.875,-.75) {$n$};
 
         \node at (3,-1.5) 
-            {$rank(s_1) = cos(v_1, v_{cen})$};
+        {$rank(s_1) = \sum_i \mathbbm{1}[cos(v_1, v_{cen}) > cos(v_i, v_{cen})]$};
 
         \end{tikzpicture}
       \end{figure}
@@ -868,9 +869,10 @@ Sentence Ranking Methods:
     \only<1>{\item Simple but effective baselines.}
     \only<2->{\proit{Simple but effective baselines.}}
 ~\\~\\
-    \only<-2>{\item Ranking methods need redundancy penalty/diversity reward}
+    \only<-2>{\item Ranking methods need redundancy penalty/diversity reward
+            e.g., MMR.}
     \only<3->{\conit{Ranking methods need redundancy 
-        penalty/diversity reward.}}
+        penalty/diversity reward e.g., MMR.}}
 ~\\~\\
     \only<-3>{\item Ranking implies consistent pairwise ordering \\
         (which definitely does not hold).}
@@ -1035,10 +1037,10 @@ Sentence Ranking Methods:
 
  Classification Methods:
  \begin{itemize}
-  \only<1>{\item Very little labeled data; limited power of features for 
-        prediction}
-  \only<2->{\conit{Very little labeled data; limited power of 
-            features for prediction}}
+  \only<1>{\item Reference summaries are typically abstractive $\rightarrow$ 
+          very little labeled data.}
+  \only<2->{\conit{Reference summaries are typically abstractive $\rightarrow$
+          very little labeled data.}}
     \end{itemize}
 ~\\
  Regression Methods:
@@ -1055,9 +1057,9 @@ Classification \& Regression Methods:
   \only<4->{\conit{Training objective unaware of redundancy unless conditioning
             on summary $\mathcal{S}$.}}
   \only<-4>{\item Conditioning on $\mathcal{S}$ 
-        introduce exploration concerns (reinforcement learning).}
+        introduces exploration concerns (reinforcement learning).}
   \only<5>{\conit{Conditioning on $\mathcal{S}$ 
-        introduce exploration concerns (reinforcement learning).}}
+        introduces exploration concerns (reinforcement learning).}}
     \end{itemize}
 
 \end{frame}
@@ -1550,7 +1552,7 @@ correlated with the evaluation metric and solvable.
     \uncover<2->{
       \begin{itemize}
         \small
-        \item Ranking and compression trained separately .
+        \item Ranking and compression trained separately.
         \only<-2>{\item Ranking performed on uncompressed sentences.}
         \only<3->{\conit{Ranking performed on uncompressed sentences.}}
         \item Linguistically motivated beam search is used to find 
@@ -1760,11 +1762,11 @@ correlated with the evaluation metric and solvable.
  \begin{itemize}
   \small
   \item Mine template patterns for sentence summarization.
-  \item Memory-based look up for probabilisticly mapping a 
+  \item Memory-based look up for probabilistically  mapping a 
         sentence to template.
   \item Only compare against their own template \& compression based methods.\\
-  \only<1>{Unclear how these compare other approaches or human reference.}
-  \only<2->{\conit{Unclear how these compare other approaches or human 
+  \only<1>{Unclear how these compare to other approaches or human reference.}
+  \only<2->{\conit{Unclear how these compare to other approaches or human 
         reference.}}
  \end{itemize}
 
@@ -1810,6 +1812,34 @@ correlated with the evaluation metric and solvable.
 
 \end{frame}
 
+
+\begin{frame}{Conclusion}
+   
+    \begin{itemize}
+            \small
+        \item Evaluation has been too focused on \textbf{content selection}.
+        \item \textbf{Global optimization} based methods have reached the limit
+            of \textbf{content selection} for \textbf{extractive} 
+            summarization.
+        
+        \item \textbf{Abstractive} summarization is also heavily focused on 
+            \textbf{content
+            selection} (i.e. using deletion to pack more content into
+            the length budget).
+    \end{itemize}
+
+    Looking to the future:    
+    \begin{itemize}
+            \small
+     \item More research is needed on human content fusion strategies in 
+            summarization.
+        \item More research is needed on human organizational strategies in 
+            summarization.
+     \item How to humans organize a response to an information need/query?
+    \end{itemize}
+    \uncover<2>{\textbf{Questions?}}
+
+\end{frame}
 
 %
 %
