@@ -1,4 +1,5 @@
 \documentclass[xcolor={table}]{beamer}
+\PassOptionsToPackage{cmyk}{xcolor}
 \usefonttheme{professionalfonts}
 \usefonttheme{serif}
 \usepackage{natbib}
@@ -40,7 +41,7 @@
 
 
 \usetheme{metropolis}           % Use metropolis theme
-\title{Multi-Document Summarization: Evaluation, Extraction, and Abstraction}
+\title{Automatic Summarization: Evaluation, Extraction, and Abstraction}
 \date{\today}
 \author{Chris Kedzie}
 \institute{Dept. of Computer Science, Columbia University}
@@ -1189,13 +1190,13 @@ correlated with the evaluation metric and solvable.
 
     \begin{tabular}{c c c}
     \uncover<1->{
-        \includegraphics[scale=.5]{svg/qr_opts.pdf}
-    } &
+        \includegraphics[scale=.5]{svg/qrimg}
+    } &  
     \only<2->{
-       \includegraphics[scale=.5]{svg/ilp_opts.pdf}
+       \includegraphics[scale=.5]{svg/ilpimg}
    } &
     \only<3->{
-       \includegraphics[scale=.5]{svg/sm_opts.pdf}
+       \includegraphics[scale=.5]{svg/smimg}
     } \\
     \uncover<1->{QR decomp.} &\uncover<2->{ILP} & \uncover<3>{Submodular} \\
 \end{tabular}
@@ -1831,11 +1832,13 @@ correlated with the evaluation metric and solvable.
     Looking to the future:    
     \begin{itemize}
             \small
-     \item More research is needed on human content fusion strategies in 
-            summarization.
+     \item More research is needed on interaction of linguistic quality
+         and content selection.
         \item More research is needed on human organizational strategies in 
             summarization.
-     \item How to humans organize a response to an information need/query?
+        \item More research is needed on temporal/streaming summarization.
+     
+        %\item How to humans organize a response to an information need/query?
     \end{itemize}
     \uncover<2>{\textbf{Questions?}}
 
